@@ -4,82 +4,79 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
-@Entity
-@Table(name = "user_detail")
+@Entity // create table
+@Table(name = "user_details")
 public class UserDetailEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer userDetailId;
-    
-    private String country;
-    private String state;
-    private String city;
-    private String address;
-    private String pincode;
-    
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    private UserEntity userEntity;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer userDetailId;
+	private Integer userId;//fk
+	private String qualification;
+	private String city;
+	private String state;
+	private String country;
+	private Integer userTypeId; //fk 
 
-    // Getters and Setters
-    public Integer getUserDetailId() {
-        return userDetailId;
-    }
+	public Integer getUserDetailId() {
+		return userDetailId;
+	}
 
-    public void setUserDetailId(Integer userDetailId) {
-        this.userDetailId = userDetailId;
-    }
+	public void setUserDetailId(Integer userDetailId) {
+		this.userDetailId = userDetailId;
+	}
 
-    public String getCountry() {
-        return country;
-    }
+	public Integer getUserId() {
+		return userId;
+	}
 
-    public void setCountry(String country) {
-        this.country = country;
-    }
+	public void setUserId(Integer userId) {
+		this.userId = userId;
+	}
 
-    public String getState() {
-        return state;
-    }
+	public String getQualification() {
+		return qualification;
+	}
 
-    public void setState(String state) {
-        this.state = state;
-    }
+	public void setQualification(String qualification) {
+		this.qualification = qualification;
+	}
 
-    public String getCity() {
-        return city;
-    }
+	public String getCity() {
+		return city;
+	}
 
-    public void setCity(String city) {
-        this.city = city;
-    }
+	public void setCity(String city) {
+		this.city = city;
+	}
 
-    public String getAddress() {
-        return address;
-    }
+	public String getState() {
+		return state;
+	}
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
+	public void setState(String state) {
+		this.state = state;
+	}
 
-    public String getPincode() {
-        return pincode;
-    }
+	public String getCountry() {
+		return country;
+	}
 
-    public void setPincode(String pincode) {
-        this.pincode = pincode;
-    }
+	public void setCountry(String country) {
+		this.country = country;
+	}
 
-    public UserEntity getUserEntity() {
-        return userEntity;
-    }
+	public Integer getUserTypeId() {
+		return userTypeId;
+	}
 
-    public void setUserEntity(UserEntity userEntity) {
-        this.userEntity = userEntity;
-    }
+	public void setUserTypeId(Integer userTypeId) {
+		this.userTypeId = userTypeId;
+	}
+
+	
+	
+	
 }

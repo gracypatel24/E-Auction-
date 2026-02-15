@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository;
 
 import com.grownited.eauction.entity.UserTypeEntity;
 
-@Repository
+@Repository//stereotype annotation 
 public interface UserTypeRepository extends JpaRepository<UserTypeEntity, Integer>{
 
 }
