@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.grownited.eauction.repository.CategoryRepository;
+import com.grownited.eauction.repository.ProductRepository;
 import com.grownited.eauction.repository.UserRepository;
 import com.grownited.eauction.repository.UserTypeRepository;
 
@@ -13,27 +14,32 @@ import com.grownited.eauction.repository.UserTypeRepository;
 public class AdminController {
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    CategoryRepository categoryRepository;
+    private CategoryRepository categoryRepository;
 
     @Autowired
-    UserTypeRepository userTypeRepository;
+    private UserTypeRepository userTypeRepository;
+    
+    @Autowired
+    private ProductRepository productRepository;
 
     @GetMapping("/admin-dashboard")
     public String dashboard(Model model) {
-
-        // Real data from database
-        long totalUsers      = userRepository.count();
+        
+        // Get real data from database
+        long totalUsers = userRepository.count();
         long totalCategories = categoryRepository.count();
-        long totalUserTypes  = userTypeRepository.count();
-
-        model.addAttribute("totalUsers",      totalUsers);
+        long totalProducts = productRepository.count();
+        long totalUserTypes = userTypeRepository.count();
+        
+        model.addAttribute("totalUsers", totalUsers);
         model.addAttribute("totalCategories", totalCategories);
-        model.addAttribute("totalUserTypes",  totalUserTypes);
-        model.addAttribute("name", "Gracy Patel");
-
+        model.addAttribute("totalProducts", totalProducts);
+        model.addAttribute("totalUserTypes", totalUserTypes);
+        model.addAttribute("activeAuctions", 42); // You can calculate this based on your logic
+        
         return "AdminDashboard";
     }
 }
