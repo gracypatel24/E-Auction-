@@ -82,25 +82,6 @@
             margin-right: 5px;
         }
         
-        /* Mail Icon */
-        .mail-icon {
-            position: relative;
-            cursor: pointer;
-            font-size: 20px;
-            color: #495057;
-        }
-        
-        .mail-badge {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background: #dc3545;
-            color: white;
-            font-size: 10px;
-            padding: 2px 5px;
-            border-radius: 50%;
-        }
-        
         /* User Dropdown */
         .user-dropdown {
             position: relative;
@@ -454,6 +435,7 @@
         .badge-warning { background: #fff3cd; color: #856404; }
         .badge-info { background: #d1ecf1; color: #0c5460; }
         .badge-primary { background: #007bff; color: white; }
+        .badge-danger { background: #f8d7da; color: #721c24; }
         
         .product-thumb {
             width: 35px;
@@ -504,28 +486,6 @@
     </div>
     
     <div class="header-right">
-        <!-- Navigation Links -->
-        <div class="nav-links">
-            <a href="${pageContext.request.contextPath}/admin-dashboard" class="nav-link-item">
-                <i class="fas fa-home"></i> Dashboard
-            </a>
-            <a href="${pageContext.request.contextPath}/listProduct" class="nav-link-item">
-                <i class="fas fa-gavel"></i> Auctions
-            </a>
-            <a href="${pageContext.request.contextPath}/listCategory" class="nav-link-item">
-                <i class="fas fa-tags"></i> Categories
-            </a>
-            <a href="${pageContext.request.contextPath}/listUser" class="nav-link-item">
-                <i class="fas fa-users"></i> Users
-            </a>
-        </div>
-        
-        <!-- Mail Icon -->
-        <a href="${pageContext.request.contextPath}/admin/mail" class="mail-icon" style="color: #495057;">
-            <i class="far fa-envelope"></i>
-            <span class="mail-badge">3</span>
-        </a>
-        
         <!-- User Dropdown -->
         <div class="user-dropdown" id="userDropdown">
             <div class="user-profile" onclick="toggleDropdown()">
@@ -549,10 +509,6 @@
             <div class="dropdown-menu" id="dropdownMenu">
                 <a href="${pageContext.request.contextPath}/admin/profile" class="dropdown-item">
                     <i class="fas fa-user"></i> My Profile
-                </a>
-                <a href="${pageContext.request.contextPath}/admin/mail" class="dropdown-item">
-                    <i class="fas fa-envelope"></i> Messages
-                    <span style="margin-left: auto; background: #dc3545; color: white; padding: 2px 6px; border-radius: 10px; font-size: 11px;">3</span>
                 </a>
                 <div class="dropdown-divider"></div>
                 <a href="${pageContext.request.contextPath}/logout" class="dropdown-item">
@@ -612,13 +568,6 @@
         <div class="nav-item">
             <a class="nav-link" href="${pageContext.request.contextPath}/newUserType">
                 <i class="fas fa-user-tag"></i> User Types
-            </a>
-        </div>
-
-        <div class="nav-item">
-            <a class="nav-link" href="${pageContext.request.contextPath}/admin/mail">
-                <i class="fas fa-envelope"></i> Messages
-                <span style="margin-left: auto; background: #dc3545; color: white; padding: 2px 8px; border-radius: 10px; font-size: 11px;">3</span>
             </a>
         </div>
 
