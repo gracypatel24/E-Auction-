@@ -53,6 +53,12 @@
           <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/newUserType">User Types</a></li>
         </ul>
       </div>
+	  <div class="nav-item">
+	      <a class="nav-link" href="${pageContext.request.contextPath}/listUser">
+	          <i class="ti-user"></i>
+	          <span>Users</span>
+	      </a>
+	  </div>
     </li>
     
     <li class="nav-item ${currentPage == 'reports' ? 'active' : ''}">

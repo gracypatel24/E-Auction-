@@ -1,141 +1,61 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<!-- Required meta tags -->
-<meta charset="utf-8">
-<meta name="viewport"
-	content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Skydash Participant</title>
-<!-- plugins:css -->
-
-<jsp:include page="ParticipantCSS.jsp"></jsp:include>
+    <meta charset="UTF-8">
+    <title>Participant Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-	<div class="container-scroller">
-		<!-- partial:partials/_navbar.html -->
-		<jsp:include page="ParticipantHeader.jsp"></jsp:include>
-		<!-- partial -->
-		<div class="container-fluid page-body-wrapper">
-			<!-- partial:partials/_sidebar.html -->
-			<jsp:include page="ParticipantLeftSidebar.jsp"></jsp:include>
-			<!-- partial -->
-			<div class="main-panel">
-				<div class="content-wrapper">
-					<div class="row">
-						<div class="col-md-12 grid-margin">
-							<div class="row">
-								<div class="col-12 col-xl-8 mb-4 mb-xl-0">
-									<h3 class="font-weight-bold">Welcome ${sessionScope.user.firstName}</h3>
-									<h6 class="font-weight-normal mb-0">
-										All systems are running smoothly! You have <span
-											class="text-primary">3 unread alerts!</span>
-									</h6>
-								</div>
-								<div class="col-12 col-xl-4">
-									<div class="justify-content-end d-flex">
-										<div class="dropdown flex-md-grow-1 flex-xl-grow-0">
-											<button class="btn btn-sm btn-light bg-white dropdown-toggle"
-												type="button" id="dropdownMenuDate2"
-												data-bs-toggle="dropdown" aria-haspopup="true"
-												aria-expanded="true">
-												<i class="mdi mdi-calendar"></i> Today (10 Jan 2021)
-											</button>
-											<div class="dropdown-menu dropdown-menu-right"
-												aria-labelledby="dropdownMenuDate2">
-												<a class="dropdown-item" href="#">January - March</a> <a
-													class="dropdown-item" href="#">March - June</a> <a
-													class="dropdown-item" href="#">June - August</a> <a
-													class="dropdown-item" href="#">August - November</a>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-12 grid-margin transparent">
-							<div class="row">
-								<div class="col-md-3 mb-4 stretch-card transparent">
-									<div class="card card-tale">
-										<div class="card-body">
-											<p class="mb-4">Today’s Bookings</p>
-											<p class="fs-30 mb-2">4006</p>
-											<p>10.00% (30 days)</p>
-										</div>
-									</div>
-								</div>
-								<div class="col-md-3 mb-4 stretch-card transparent">
-									<div class="card card-dark-blue">
-										<div class="card-body">
-											<p class="mb-4">Total Bookings</p>
-											<p class="fs-30 mb-2">61344</p>
-											<p>22.00% (30 days)</p>
-										</div>
-									</div>
-								</div>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">E-Auction - Participant</a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="${pageContext.request.contextPath}/participant/dashboard">Dashboard</a>
+                <a class="nav-link" href="${pageContext.request.contextPath}/participant/my-bids">My Bids</a>
+                <a class="nav-link" href="${pageContext.request.contextPath}/participant/won-auctions">Won Auctions</a>
+                <a class="nav-link" href="${pageContext.request.contextPath}/profile">Profile</a>
+                <a class="nav-link" href="${pageContext.request.contextPath}/logout">Logout</a>
+            </div>
+        </div>
+    </nav>
 
+    <div class="container mt-4">
+        <h2>Welcome, ${sessionScope.user.firstName}!</h2>
+        
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <div class="card text-white bg-primary mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Bids</h5>
+                        <h2>${totalBids}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-white bg-success mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Winning Bids</h5>
+                        <h2>${winningBids.size()}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-white bg-info mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Active Auctions</h5>
+                        <h2>${activeAuctions.size()}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-								<div class="col-md-3 mb-4 stretch-card transparent">
-									<div class="card card-light-blue">
-										<div class="card-body">
-											<p class="mb-4">Number of Meetings</p>
-											<p class="fs-30 mb-2">34040</p>
-											<p>2.00% (30 days)</p>
-										</div>
-									</div>
-								</div>
-								<div class="col-md-3  mb-4 stretch-card transparent">
-									<div class="card card-light-danger">
-										<div class="card-body">
-											<p class="mb-4">Number of Clients</p>
-											<p class="fs-30 mb-2">47033</p>
-											<p>0.22% (30 days)</p>
-										</div>
-									</div>
-								</div>
-								
-							</div>
-						</div>
-					</div>
-
-
-					<div class="row">
-						<div class="col-md-12 grid-margin stretch-card">
-							<div class="card">
-								<div class="card-body">
-									<div class="d-flex justify-content-between">
-										<p class="card-title">Sales Report</p>
-										<a href="#" class="text-info">View all</a>
-									</div>
-									<p class="font-weight-500">The total number of sessions
-										within the date range. It is the period time a user is
-										actively engaged with your website, page or app, etc</p>
-									<div id="sales-chart-legend" class="chartjs-legend mt-4 mb-2"></div>
-									<canvas id="sales-chart"></canvas>
-								</div>
-							</div>
-						</div>
-					</div>
-
-
-				</div>
-				<!-- content-wrapper ends -->
-				<!-- partial:partials/_footer.html -->
-				
-				<jsp:include page="ParticipantFooter.jsp"></jsp:include>
-				<!-- partial -->
-			</div>
-			<!-- main-panel ends -->
-		</div>
-		<!-- page-body-wrapper ends -->
-	</div>
-	<!-- container-scroller -->
-	<!-- plugins:js -->
-	
-	
-	
-	
-	<!-- End custom js for this page-->
-</body>
-</html>
+        <h3 class="mt-4">Active Auctions</h3>
+        <div class="row">
+            <c:forEach items="${activeAuctions}" var="auction">
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <img src="${auction.imageUrl}" class="card-img-top" alt="${auction.title}" style="height: 200px; object-fit: cover;">
+                        <div class="card-body">
+                            <

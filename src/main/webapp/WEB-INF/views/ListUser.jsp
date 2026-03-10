@@ -7,7 +7,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>E-Auction | Manage Auctions</title>
+  <title>E-Auction | Users Management</title>
   
   <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/skydash/vendors/feather/feather.css">
   <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/skydash/vendors/ti-icons/css/themify-icons.css">
@@ -57,48 +57,69 @@
       color: #495057; text-decoration: none; font-weight: 500;
     }
     
-    .nav-link i { margin-right: 12px; font-size: 18px; }
+    .nav-link i { margin-right: 12px; }
     
     .page-header {
       background: white; padding: 20px; border-radius: 15px; margin-bottom: 30px;
       display: flex; justify-content: space-between; align-items: center;
     }
     
-    .btn-add {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white; border: none; padding: 10px 25px; border-radius: 10px;
-      font-weight: 600; text-decoration: none; display: inline-block;
+    .page-header h2 span { color: #667eea; }
+    
+    .search-box {
+      width: 300px; position: relative;
     }
     
-    .btn-add:hover { color: white; transform: translateY(-2px); box-shadow: 0 10px 25px rgba(102,126,234,0.4); }
+    .search-box input {
+      width: 100%; height: 45px; padding: 0 15px 0 45px;
+      border: 2px solid #e1e5eb; border-radius: 10px;
+    }
+    
+    .search-box i {
+      position: absolute; left: 15px; top: 50%; transform: translateY(-50%);
+      color: #667eea;
+    }
     
     .table-container {
-      background: white; border-radius: 15px; padding: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+      background: white; border-radius: 15px; padding: 20px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.05);
     }
     
     .table thead th {
-      border-bottom: 2px solid #667eea; color: #495057; font-weight: 600;
-      font-size: 14px; text-transform: uppercase;
+      border-bottom: 2px solid #667eea; color: #495057;
+      font-weight: 600; font-size: 13px; text-transform: uppercase;
     }
     
     .table tbody td { vertical-align: middle; padding: 15px 10px; }
     
-    .product-thumb { width: 50px; height: 50px; border-radius: 10px; object-fit: cover; }
+    .user-avatar {
+      width: 40px; height: 40px; border-radius: 50%; margin-right: 10px;
+      object-fit: cover;
+    }
     
-    .badge { padding: 6px 12px; border-radius: 30px; font-size: 12px; font-weight: 600; }
-    .badge-active { background: #d4edda; color: #155724; }
-    .badge-completed { background: #d1ecf1; color: #0c5460; }
-    .badge-cancelled { background: #f8d7da; color: #721c24; }
+    .role-badge {
+      padding: 5px 12px; border-radius: 30px; font-size: 12px; font-weight: 500;
+      display: inline-block;
+    }
+    
+    .role-ADMIN { background: #dc3545; color: white; }
+    .role-PARTICIPANT { background: #28a745; color: white; }
+    .role-JUDGE { background: #ffc107; color: black; }
+    
+    .status-active { color: #28a745; font-weight: 600; }
+    .status-inactive { color: #dc3545; font-weight: 600; }
+    
+    .badge { padding: 5px 10px; border-radius: 30px; font-size: 11px; }
+    .badge-info { background: #17a2b8; color: white; }
     
     .btn-action {
       padding: 6px 12px; border-radius: 5px; font-size: 12px; margin: 0 3px;
-      border: none; cursor: pointer; transition: all 0.3s; text-decoration: none;
-      display: inline-block;
+      border: none; cursor: pointer; text-decoration: none; display: inline-block;
     }
     
     .btn-view { background: #e7f3ff; color: #004085; }
     .btn-edit { background: #fff3cd; color: #856404; }
-    .btn-delete { background: #f8d7da; color: #721c24; }
+    .btn-disable { background: #f8d7da; color: #721c24; }
     
     .stats-card {
       background: white; border-radius: 15px; padding: 20px; text-align: center;
@@ -107,17 +128,10 @@
     
     .stats-card h3 { font-size: 32px; font-weight: 700; color: #667eea; margin: 10px 0 5px; }
     
-    .alert { border-radius: 10px; margin-bottom: 20px; }
-    
     .footer {
       background: white; padding: 20px; border-radius: 15px; margin-top: 30px;
       text-align: center; color: #6c757d;
     }
-    
-    /* Modal Styles */
-    .modal-content { border-radius: 15px; }
-    .modal-header { border-bottom: none; padding: 25px 25px 0; }
-    .modal-footer { border-top: none; padding: 0 25px 25px; }
   </style>
 </head>
 <body>
@@ -125,7 +139,7 @@
 <!-- Header -->
 <header class="header">
   <div class="header-left">
-    <div class="header-title"><span>Auction</span> Management</div>
+    <div class="header-title"><span>Users</span> Management</div>
   </div>
   <div class="header-right">
     <div class="user-profile">
@@ -152,7 +166,7 @@
         <i class="ti-dashboard"></i> Dashboard
       </a>
     </div>
-    <div class="nav-item active">
+    <div class="nav-item">
       <a class="nav-link" href="${pageContext.request.contextPath}/listProduct">
         <i class="ti-gavel"></i> Auctions
       </a>
@@ -162,7 +176,7 @@
         <i class="ti-layout"></i> Categories
       </a>
     </div>
-    <div class="nav-item">
+    <div class="nav-item active">
       <a class="nav-link" href="${pageContext.request.contextPath}/listUser">
         <i class="ti-user"></i> Users
       </a>
@@ -185,10 +199,11 @@
   
   <!-- Page Header -->
   <div class="page-header">
-    <h2><span>Auction</span> Management</h2>
-    <a href="${pageContext.request.contextPath}/newProduct" class="btn-add">
-      <i class="ti-plus mr-2"></i> Add New Auction
-    </a>
+    <h2><span>Users</span> Management</h2>
+    <div class="search-box">
+      <i class="ti-search"></i>
+      <input type="text" id="searchInput" placeholder="Search users..." onkeyup="searchUsers()">
+    </div>
   </div>
   
   <!-- Success/Error Messages -->
@@ -212,105 +227,112 @@
   
   <!-- Statistics Row -->
   <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-3">
       <div class="stats-card">
-        <i class="ti-gavel" style="font-size: 40px; color: #667eea;"></i>
-        <h3>${totalAuctions}</h3>
-        <p>Total Auctions</p>
+        <i class="ti-user" style="font-size: 40px; color: #667eea;"></i>
+        <h3>${totalUsers}</h3>
+        <p>Total Users</p>
       </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
       <div class="stats-card">
-        <i class="ti-timer" style="font-size: 40px; color: #28a745;"></i>
-        <h3>${activeAuctions.size()}</h3>
-        <p>Active Auctions</p>
+        <i class="ti-user" style="font-size: 40px; color: #28a745;"></i>
+        <h3>${activeUsers}</h3>
+        <p>Active Users</p>
       </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
       <div class="stats-card">
-        <i class="ti-alarm-clock" style="font-size: 40px; color: #dc3545;"></i>
-        <h3>${endingSoon != null ? endingSoon.size() : 0}</h3>
-        <p>Ending Soon</p>
+        <i class="ti-user" style="font-size: 40px; color: #ffc107;"></i>
+        <h3>${participantCount}</h3>
+        <p>Participants</p>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="stats-card">
+        <i class="ti-user" style="font-size: 40px; color: #dc3545;"></i>
+        <h3>${adminCount}</h3>
+        <p>Admins</p>
       </div>
     </div>
   </div>
   
-  <!-- Auctions Table -->
+  <!-- Users Table -->
   <div class="table-container">
-    <h4 class="mb-4"><i class="ti-gavel mr-2 text-primary"></i> All Auctions</h4>
+    <h4 class="mb-4"><i class="ti-user mr-2 text-primary"></i> All Users</h4>
     
     <div class="table-responsive">
-      <table class="table table-hover" id="auctionsTable">
+      <table class="table table-hover" id="usersTable">
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Image</th>
-            <th>Title</th>
-            <th>Category</th>
-            <th>Current Bid</th>
-            <th>Bids</th>
-            <th>End Date</th>
+            <th>User</th>
+            <th>Email</th>
+            <th>Role</th>
             <th>Status</th>
+            <th>Joined</th>
+            <th>Contact</th>
+            <th>Auctions</th>
+            <th>Bids</th>
             <th>Actions</th>
           </tr>
         </thead>
-        <tbody>
-          <c:forEach items="${allAuctions}" var="auction">
-            <tr>
-              <td>#${auction.productId}</td>
-              <td>
-                <img src="${auction.imageUrl != null ? auction.imageUrl : 'https://via.placeholder.com/50x50/667eea/ffffff?text='.concat(auction.title.charAt(0))}" 
-                     class="product-thumb" alt="${auction.title}">
-              </td>
-              <td>
-                <strong>${auction.title}</strong>
-                <br>
-                <small class="text-muted">${auction.description.substring(0, auction.description.length() > 30 ? 30 : auction.description.length())}...</small>
-              </td>
-              <td><span class="badge badge-info">${auction.category}</span></td>
-			  <td><strong class="text-primary">$${auction.currentBid}</strong></td>
-			  <td><span class="badge badge-primary">${auction.bidCount}</span></td>
-			  <td>${auction.endDate}</td>  <!-- Just display the date directly, no fmt:formatDate -->
-			  <td>
-			    <c:choose>
-			      <c:when test="${auction.status == 'ACTIVE'}">
-			        <span class="badge badge-active">Active</span>
-			      </c:when>
-			      <c:when test="${auction.status == 'COMPLETED'}">
-			        <span class="badge badge-completed">Completed</span>
-			      </c:when>
-			      <c:otherwise>
-			        <span class="badge badge-cancelled">Cancelled</span>
-			      </c:otherwise>
-			    </c:choose>
-			  </td>
-              <td>
-                <a href="${pageContext.request.contextPath}/viewProduct?productId=${auction.productId}" 
-                   class="btn-action btn-view" title="View">
-                  <i class="ti-eye"></i>
-                </a>
-                <a href="${pageContext.request.contextPath}/editProduct?productId=${auction.productId}" 
-                   class="btn-action btn-edit" title="Edit">
-                  <i class="ti-pencil"></i>
-                </a>
-                <a href="#" onclick="confirmDelete(${auction.productId})" 
-                   class="btn-action btn-delete" title="Delete">
-                  <i class="ti-trash"></i>
-                </a>
-              </td>
-            </tr>
-          </c:forEach>
-          
-          <c:if test="${empty allAuctions}">
-            <tr>
-              <td colspan="9" class="text-center py-5">
-                <i class="ti-gavel" style="font-size: 50px; color: #ccc;"></i>
-                <h5 class="mt-3">No Auctions Found</h5>
-                <p class="text-muted">Click the "Add New Auction" button to create your first auction.</p>
-              </td>
-            </tr>
-          </c:if>
-        </tbody>
+		<tbody>
+		  <c:forEach items="${userList}" var="user">
+		    <tr>
+		      <td>
+		        <div style="display: flex; align-items: center;">
+		          <img src="${user.profilePicURL != null ? user.profilePicURL : 'https://via.placeholder.com/40x40/667eea/ffffff?text='.concat(user.firstName.charAt(0))}" 
+		               class="user-avatar" alt="avatar">
+		          <div>
+		            <strong>${user.firstName} ${user.lastName}</strong>
+		          </div>
+		        </div>
+		      </td>
+		      <td>${user.email}</td>
+		      <td>
+		        <span class="role-badge role-${user.role}">${user.role}</span>
+		      </td>
+		      <td>
+		        <c:choose>
+		          <c:when test="${user.active}">
+		            <span class="status-active">● Active</span>
+		          </c:when>
+		          <c:otherwise>
+		            <span class="status-inactive">● Inactive</span>
+		          </c:otherwise>
+		        </c:choose>
+		      </td>
+		      <td>${user.createdAt}</td>  <!-- FIXED: removed fmt:formatDate -->
+		      <td>${user.contactNum != null ? user.contactNum : '—'}</td>
+		      <td><span class="badge badge-info">${user.auctionCount != null ? user.auctionCount : 0}</span></td>
+		      <td><span class="badge badge-success">${user.bidCount != null ? user.bidCount : 0}</span></td>
+		      <td>
+		        <a href="${pageContext.request.contextPath}/viewUser?userId=${user.userId}" 
+		           class="btn-action btn-view" title="View">
+		          <i class="ti-eye"></i>
+		        </a>
+		        <a href="${pageContext.request.contextPath}/editUser?userId=${user.userId}" 
+		           class="btn-action btn-edit" title="Edit">
+		          <i class="ti-pencil"></i>
+		        </a>
+		        <c:choose>
+		          <c:when test="${user.active}">
+		            <a href="#" onclick="toggleUserStatus(${user.userId}, false)" 
+		               class="btn-action btn-disable" title="Disable">
+		              <i class="ti-close"></i>
+		            </a>
+		          </c:when>
+		          <c:otherwise>
+		            <a href="#" onclick="toggleUserStatus(${user.userId}, true)" 
+		               class="btn-action btn-edit" title="Enable">
+		              <i class="ti-check"></i>
+		            </a>
+		          </c:otherwise>
+		        </c:choose>
+		      </td>
+		    </tr>
+		  </c:forEach>
+		</tbody>
       </table>
     </div>
   </div>
@@ -328,24 +350,22 @@
   </div>
 </div>
 
-<!-- Delete Confirmation Modal -->
-<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-hidden="true">
+<!-- Toggle Status Modal -->
+<div class="modal fade" id="toggleModal" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" style="color: #721c24;">
-          <i class="ti-alert mr-2" style="color: #dc3545;"></i> Confirm Delete
-        </h5>
+        <h5 class="modal-title" id="toggleModalTitle">Confirm Action</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body">
-        <p>Are you sure you want to delete this auction? This action cannot be undone.</p>
+      <div class="modal-body" id="toggleModalBody">
+        Are you sure you want to change this user's status?
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <a href="#" id="confirmDeleteBtn" class="btn btn-danger">Delete</a>
+        <a href="#" id="confirmToggleBtn" class="btn btn-primary">Confirm</a>
       </div>
     </div>
   </div>
@@ -356,9 +376,40 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-function confirmDelete(productId) {
-    $('#confirmDeleteBtn').attr('href', '${pageContext.request.contextPath}/deleteProduct?productId=' + productId);
-    $('#deleteModal').modal('show');
+function searchUsers() {
+    var input = document.getElementById("searchInput");
+    var filter = input.value.toUpperCase();
+    var table = document.getElementById("usersTable");
+    var tr = table.getElementsByTagName("tr");
+    
+    for (var i = 1; i < tr.length; i++) {
+        var tdArray = tr[i].getElementsByTagName("td");
+        var found = false;
+        
+        for (var j = 0; j < tdArray.length; j++) {
+            if (tdArray[j]) {
+                var textValue = tdArray[j].textContent || tdArray[j].innerText;
+                if (textValue.toUpperCase().indexOf(filter) > -1) {
+                    found = true;
+                    break;
+                }
+            }
+        }
+        
+        if (found) {
+            tr[i].style.display = "";
+        } else {
+            tr[i].style.display = "none";
+        }
+    }
+}
+
+function toggleUserStatus(userId, activate) {
+    var action = activate ? "activate" : "deactivate";
+    $('#toggleModalTitle').text(activate ? 'Activate User' : 'Deactivate User');
+    $('#toggleModalBody').text('Are you sure you want to ' + action + ' this user?');
+    $('#confirmToggleBtn').attr('href', '${pageContext.request.contextPath}/toggleUserStatus?userId=' + userId + '&activate=' + activate);
+    $('#toggleModal').modal('show');
 }
 </script>
 

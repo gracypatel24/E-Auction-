@@ -7,5 +7,9 @@ import com.grownited.eauction.entity.UserEntity;
 
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Integer> {
+    
+    // Find user by email (used in login)
     Optional<UserEntity> findByEmail(String email);
+    
+    // That's it! No custom methods needed
 }

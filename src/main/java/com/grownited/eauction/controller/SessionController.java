@@ -19,6 +19,8 @@ import com.grownited.eauction.entity.UserTypeEntity;
 import com.grownited.eauction.repository.UserDetailRepository;
 import com.grownited.eauction.repository.UserRepository;
 import com.grownited.eauction.repository.UserTypeRepository;
+import com.grownited.eauction.services.CloudinaryService;
+import com.grownited.eauction.services.MailerService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -36,6 +38,12 @@ public class SessionController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private CloudinaryService cloudinaryService;
+
+    @Autowired
+    private MailerService mailerService;
 
     @GetMapping("/signup")
     public String openSignupPage(Model model) {
@@ -64,11 +72,12 @@ public class SessionController {
                 session.setAttribute("user", dbUser);
                 session.setAttribute("userId", dbUser.getUserId());
                 session.setAttribute("userRole", dbUser.getRole());
+                session.setAttribute("userEmail", dbUser.getEmail());
 
                 if ("ADMIN".equals(dbUser.getRole())) {
                     return "redirect:/admin-dashboard";
                 } else {
-                    return "redirect:/participant/participant-dashboard";
+                    return "redirect:/participant/dashboard";
                 }
             }
         }
@@ -76,7 +85,7 @@ public class SessionController {
         model.addAttribute("error", "Invalid Credentials");
         return "Login";
     }
-    
+
     @PostMapping("/register")
     public String register(@RequestParam String firstName,
                           @RequestParam String lastName,
@@ -94,7 +103,6 @@ public class SessionController {
                           Model model) {
         
         try {
-            // Check if email exists
             Optional<UserEntity> existingUser = userRepository.findByEmail(email);
             if (existingUser.isPresent()) {
                 model.addAttribute("error", "Email already registered");
@@ -103,7 +111,6 @@ public class SessionController {
                 return "Signup";
             }
             
-            // Create user
             UserEntity user = new UserEntity();
             user.setFirstName(firstName);
             user.setLastName(lastName);
@@ -113,7 +120,6 @@ public class SessionController {
             user.setBirthYear(birthYear);
             user.setGender(gender);
             
-            // Set role based on userTypeId
             if (userTypeId == 1) {
                 user.setRole("ADMIN");
             } else {
@@ -123,9 +129,14 @@ public class SessionController {
             user.setActive(true);
             user.setCreatedAt(LocalDate.now());
             
+            // Upload profile picture if provided
+            if (profilePic != null && !profilePic.isEmpty()) {
+                String profilePicUrl = cloudinaryService.uploadImage(profilePic);
+                user.setProfilePicURL(profilePicUrl);
+            }
+            
             UserEntity savedUser = userRepository.save(user);
             
-            // Create user details
             UserDetailEntity userDetail = new UserDetailEntity();
             userDetail.setUserId(savedUser.getUserId());
             userDetail.setCity(city);
@@ -135,15 +146,19 @@ public class SessionController {
             
             userDetailRepository.save(userDetail);
             
+            // COMMENT OUT OR REMOVE THIS LINE
+            // mailerService.sendWelcomeMail(savedUser);
+            
             // Auto login
             session.setAttribute("user", savedUser);
             session.setAttribute("userId", savedUser.getUserId());
             session.setAttribute("userRole", savedUser.getRole());
+            session.setAttribute("userEmail", savedUser.getEmail());
             
             if ("ADMIN".equals(savedUser.getRole())) {
                 return "redirect:/admin-dashboard";
             } else {
-                return "redirect:/participant/participant-dashboard";
+                return "redirect:/participant/dashboard";
             }
             
         } catch (Exception e) {
@@ -155,9 +170,65 @@ public class SessionController {
         }
     }
 
+    @GetMapping("/forgetpassword")
+    public String openForgetPassword() {
+        return "ForgetPassword";
+    }
+
+    @PostMapping("/forgetpassword")
+    public String processForgetPassword(@RequestParam String email, Model model) {
+        Optional<UserEntity> user = userRepository.findByEmail(email);
+        
+        String token = "reset-token-" + System.currentTimeMillis();
+        
+        if (user.isPresent()) {
+            user.get().setOtp(token);
+            userRepository.save(user.get());
+            // COMMENT OUT THIS LINE
+            // mailerService.sendPasswordResetMail(email, token);
+        }
+        
+        model.addAttribute("successMessage", 
+            "If an account exists with this email, you will receive password reset instructions shortly.");
+        
+        return "ForgetPassword";
+    }
+
+    // REMOVED: Duplicate admin profile method - this is now handled by AdminController
+    
+    // Admin Mail
+    @GetMapping("/admin/mail")
+    public String adminMail(HttpSession session) {
+        if (session.getAttribute("user") == null) {
+            return "redirect:/login";
+        }
+        return "AdminMail";
+    }
+
+    // Logout
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
         return "redirect:/login";
+    }
+
+    // User Profile (for participants)
+    @GetMapping("/profile")
+    public String viewProfile(HttpSession session, Model model) {
+        if (session.getAttribute("user") == null) {
+            return "redirect:/login";
+        }
+        
+        Integer userId = (Integer) session.getAttribute("userId");
+        Optional<UserEntity> user = userRepository.findById(userId);
+        Optional<UserDetailEntity> userDetail = userDetailRepository.findByUserId(userId);
+        
+        if (user.isPresent()) {
+            model.addAttribute("user", user.get());
+            model.addAttribute("userDetail", userDetail.orElse(null));
+            return "Profile";
+        }
+        
+        return "redirect:/dashboard";
     }
 }

@@ -5,12 +5,12 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>New User Type - E-Auction</title>
+    <title>Edit Category - E-Auction</title>
+    
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/skydash/vendors/feather/feather.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/skydash/vendors/ti-icons/css/themify-icons.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/skydash/vendors/css/vendor.bundle.base.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/skydash/css/vertical-layout-light/style.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
     
     <style>
         body { background: #f4f7fc; font-family: 'Segoe UI', sans-serif; }
@@ -73,6 +73,9 @@
         
         .form-control:focus { border-color: #667eea; outline: none; }
         
+        .form-check { margin-top: 10px; }
+        .form-check-input { margin-right: 8px; }
+        
         .btn-submit {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white; height: 50px; border: none; border-radius: 10px;
@@ -99,7 +102,7 @@
 <!-- Header -->
 <header class="header">
     <div class="header-left">
-        <div class="header-title"><span>User Type</span> Management</div>
+        <div class="header-title"><span>Edit</span> Category</div>
     </div>
     <div class="header-right">
         <div class="user-profile">
@@ -131,7 +134,7 @@
                 <i class="ti-gavel"></i> Auctions
             </a>
         </div>
-        <div class="nav-item">
+        <div class="nav-item active">
             <a class="nav-link" href="${pageContext.request.contextPath}/listCategory">
                 <i class="ti-layout"></i> Categories
             </a>
@@ -141,7 +144,7 @@
                 <i class="ti-user"></i> Users
             </a>
         </div>
-        <div class="nav-item active">
+        <div class="nav-item">
             <a class="nav-link" href="${pageContext.request.contextPath}/newUserType">
                 <i class="ti-user"></i> User Types
             </a>
@@ -159,21 +162,32 @@
     <div class="content-wrapper">
         
         <div class="form-container">
-            <h2 class="form-title">Add New User Type</h2>
+            <h2 class="form-title">Edit Category</h2>
             
-            <form action="${pageContext.request.contextPath}/saveUserType" method="post">
+            <form action="${pageContext.request.contextPath}/updateCategory" method="post">
+                <input type="hidden" name="categoryId" value="${category.categoryId}">
+                
                 <div class="form-group">
-                    <label class="form-label">User Type Name</label>
-                    <input type="text" class="form-control" name="userType" 
-                           placeholder="e.g. ADMIN, PARTICIPANT, JUDGE" required>
+                    <label class="form-label">Category Name</label>
+                    <input type="text" class="form-control" name="categoryName" 
+                           value="${category.categoryName}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Status</label>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" name="active" 
+                               ${category.active ? 'checked' : ''}>
+                        <label class="form-check-label">Active</label>
+                    </div>
                 </div>
                 
                 <button type="submit" class="btn-submit">
-                    <i class="ti-save mr-2"></i>Save User Type
+                    <i class="ti-save mr-2"></i>Update Category
                 </button>
             </form>
             
-            <a href="${pageContext.request.contextPath}/admin-dashboard" class="btn-cancel">
+            <a href="${pageContext.request.contextPath}/listCategory" class="btn-cancel">
                 <i class="ti-close mr-2"></i> Cancel
             </a>
         </div>

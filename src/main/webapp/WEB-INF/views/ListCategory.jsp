@@ -1,175 +1,146 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Category List - E-Auction</title>
-    <link rel="shortcut icon" th:href="@{/assets/images/favicon.png}">
-    <link rel="stylesheet" th:href="@{/assets/css/vertical-layout-light/style.css}">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@6.5.95/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/skydash/vendors/feather/feather.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/skydash/vendors/ti-icons/css/themify-icons.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/skydash/vendors/css/vendor.bundle.base.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/skydash/css/vertical-layout-light/style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+    
+    <style>
+        body { background: #f4f7fc; }
+        .main-panel { margin-left: 250px; margin-top: 70px; padding: 30px; }
+        .header {
+            background: white; height: 70px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 30px; position: fixed; top: 0; right: 0; left: 250px; z-index: 99;
+        }
+        .header-title span { color: #667eea; }
+        .sidebar {
+            width: 250px; background: white; box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+            position: fixed; left: 0; top: 0; bottom: 0; z-index: 100; overflow-y: auto;
+        }
+        .sidebar-menu { list-style: none; padding: 20px 0; }
+        .nav-item { margin: 5px 15px; border-radius: 10px; }
+        .nav-item.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .nav-item.active .nav-link { color: white; }
+        .nav-link { display: flex; align-items: center; padding: 12px 15px; color: #495057; text-decoration: none; }
+        .nav-link i { margin-right: 12px; }
+        .card { border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
+        .btn-add { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 10px 20px; border-radius: 8px; }
+        .badge-success { background: #d4edda; color: #155724; }
+        .badge-danger { background: #f8d7da; color: #721c24; }
+        .footer { background: white; padding: 20px; border-radius: 15px; margin-top: 30px; text-align: center; }
+    </style>
 </head>
 <body>
-<div class="container-scroller">
 
-    <!-- NAVBAR -->
-    <nav class="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex align-items-top flex-row">
-        <div class="text-center navbar-brand-wrapper d-flex align-items-center align-items-lg-start">
-            <a class="navbar-brand brand-logo" th:href="@{/admin-dashboard}">
-                <img th:src="@{/assets/images/logo.svg}" alt="Logo">
-            </a>
-            <a class="navbar-brand brand-logo-mini" th:href="@{/admin-dashboard}">
-                <img th:src="@{/assets/images/logo-mini.svg}" alt="Logo">
-            </a>
+<!-- Header -->
+<header class="header">
+    <div class="header-left">
+        <div class="header-title"><span>Category</span> Management</div>
+    </div>
+    <div class="header-right">
+        <div class="user-profile">
+            <span>${sessionScope.user.firstName} ${sessionScope.user.lastName}</span>
         </div>
-        <div class="navbar-menu-wrapper d-flex align-items-top">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item dropdown">
-                    <a class="nav-link" href="#" data-bs-toggle="dropdown">
-                        <img class="img-xs rounded-circle" th:src="@{/assets/images/faces/face8.jpg}" alt="Profile">
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-end navbar-dropdown">
-                        <a class="dropdown-item" th:href="@{/logout}">
-                            <i class="dropdown-item-icon mdi mdi-power"></i> Sign Out
-                        </a>
-                    </div>
-                </li>
-            </ul>
-            <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-bs-toggle="offcanvas">
-                <span class="mdi mdi-menu"></span>
-            </button>
-        </div>
-    </nav>
-    <!-- END NAVBAR -->
+    </div>
+</header>
 
-    <div class="container-fluid page-body-wrapper">
+<!-- Sidebar -->
+<div class="sidebar">
+    <ul class="sidebar-menu">
+        <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/admin-dashboard"><i class="ti-dashboard"></i> Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/listProduct"><i class="ti-gavel"></i> Auctions</a></li>
+        <li class="nav-item active"><a class="nav-link" href="${pageContext.request.contextPath}/listCategory"><i class="ti-layout"></i> Categories</a></li>
+        <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/listUser"><i class="ti-user"></i> Users</a></li>
+        <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/newUserType"><i class="ti-user"></i> User Types</a></li>
+        <li class="nav-item" style="margin-top:20px;"><a class="nav-link" href="${pageContext.request.contextPath}/logout"><i class="ti-power-off"></i> Logout</a></li>
+    </ul>
+</div>
 
-        <!-- SIDEBAR -->
-        <nav class="sidebar sidebar-offcanvas" id="sidebar">
-            <ul class="nav">
-                <li class="nav-item nav-category"><span class="nav-link">Main Menu</span></li>
-                <li class="nav-item menu-items">
-                    <a class="nav-link" th:href="@{/admin-dashboard}">
-                        <span class="menu-icon"><i class="mdi mdi-speedometer"></i></span>
-                        <span class="menu-title">Dashboard</span>
-                    </a>
-                </li>
-                <li class="nav-item menu-items active">
-                    <a class="nav-link" data-bs-toggle="collapse" href="#categoryMenu" aria-expanded="true">
-                        <span class="menu-icon"><i class="mdi mdi-tag-multiple"></i></span>
-                        <span class="menu-title">Category</span>
-                        <i class="menu-arrow"></i>
-                    </a>
-                    <div class="collapse show" id="categoryMenu">
-                        <ul class="nav flex-column sub-menu">
-                            <li class="nav-item"><a class="nav-link" th:href="@{/newCategory}">New Category</a></li>
-                            <li class="nav-item"><a class="nav-link active" th:href="@{/listCategory}">List Category</a></li>
-                        </ul>
-                    </div>
-                </li>
-                <li class="nav-item menu-items">
-                    <a class="nav-link" th:href="@{/newUserType}">
-                        <span class="menu-icon"><i class="mdi mdi-account-box-outline"></i></span>
-                        <span class="menu-title">User Type</span>
-                    </a>
-                </li>
-                <li class="nav-item menu-items">
-                    <a class="nav-link" href="#">
-                        <span class="menu-icon"><i class="mdi mdi-account-group"></i></span>
-                        <span class="menu-title">Users</span>
-                    </a>
-                </li>
-                <li class="nav-item nav-category"><span class="nav-link">Account</span></li>
-                <li class="nav-item menu-items">
-                    <a class="nav-link" th:href="@{/logout}">
-                        <span class="menu-icon"><i class="mdi mdi-logout"></i></span>
-                        <span class="menu-title">Logout</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-        <!-- END SIDEBAR -->
-
-        <!-- MAIN CONTENT -->
-        <div class="main-panel">
-            <div class="content-wrapper">
-
-                <div class="row">
-                    <div class="col-12 d-flex justify-content-between align-items-center mb-4">
-                        <div>
-                            <h3 class="font-weight-bold">Category List</h3>
-                            <p class="text-muted mb-0">All auction categories</p>
-                        </div>
-                        <a th:href="@{/newCategory}" class="btn btn-primary">
-                            <i class="mdi mdi-plus me-1"></i> Add Category
-                        </a>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-lg-12 grid-margin stretch-card">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <!-- categoryList comes from CategoryController: model.addAttribute("categoryList", ...) -->
-                                    <table class="table table-striped">
-                                        <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Category Name</th>
-                                            <th>Status</th>
-                                            <th>Action</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-
-                                        <!-- Show message if no categories -->
-                                        <tr th:if="${#lists.isEmpty(categoryList)}">
-                                            <td colspan="4" class="text-center text-muted">No categories found</td>
-                                        </tr>
-
-                                        <!-- Loop through categories -->
-                                        <tr th:each="cat, i : ${categoryList}">
-                                            <td th:text="${i.index + 1}">1</td>
-                                            <td th:text="${cat.categoryName}">Category</td>
-                                            <td>
-                                                <label th:if="${cat.active}" class="badge badge-success">Active</label>
-                                                <label th:unless="${cat.active}" class="badge badge-danger">Inactive</label>
-                                            </td>
-                                            <td>
-                                                <a th:href="@{/editCategory(id=${cat.categoryId})}"
-                                                   class="btn btn-sm btn-warning me-1">Edit</a>
-                                                <form th:action="@{/deleteCategory}" method="post" style="display:inline"
-                                                      onsubmit="return confirm('Delete this category?')">
-                                                    <input type="hidden" name="id" th:value="${cat.categoryId}">
-                                                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                                                </form>
-                                            </td>
-                                        </tr>
-
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
+<!-- Main Content -->
+<div class="main-panel">
+    <div class="content-wrapper">
+        
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h3 class="font-weight-bold">Category List</h3>
+                <p class="text-muted mb-0">All auction categories</p>
             </div>
-
-            <footer class="footer">
-                <div class="d-sm-flex justify-content-center">
-                    <span class="text-muted d-block d-sm-inline-block">E-Auction Admin Panel &copy; 2026</span>
-                </div>
-            </footer>
+            <a href="${pageContext.request.contextPath}/newCategory" class="btn-add">
+                <i class="ti-plus me-1"></i> Add Category
+            </a>
         </div>
+
+        <!-- Categories Table -->
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Category Name</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <c:if test="${empty categoryList}">
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted py-4">
+                                        <i class="ti-folder" style="font-size: 40px; color: #ccc;"></i>
+                                        <p class="mt-2">No categories found</p>
+                                    </td>
+                                </tr>
+                            </c:if>
+                            
+                            <c:forEach items="${categoryList}" var="cat" varStatus="i">
+                                <tr>
+                                    <td>${i.index + 1}</td>
+                                    <td>${cat.categoryName}</td>
+                                    <td>
+                                        <c:choose>
+                                            <c:when test="${cat.active}">
+                                                <span class="badge badge-success">Active</span>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <span class="badge badge-danger">Inactive</span>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </td>
+                                    <td>
+                                        <a href="${pageContext.request.contextPath}/editCategory?id=${cat.categoryId}"
+                                           class="btn btn-sm btn-warning me-1">Edit</a>
+                                        <form action="${pageContext.request.contextPath}/deleteCategory" method="post" style="display:inline"
+                                              onsubmit="return confirm('Delete this category?')">
+                                            <input type="hidden" name="id" value="${cat.categoryId}">
+                                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <span>E-Auction Admin Panel &copy; 2026</span>
+        </footer>
+        
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-<script th:src="@{/assets/js/template.js}"></script>
-<script th:src="@{/assets/js/off-canvas.js}"></script>
-<script th:src="@{/assets/js/hoverable-collapse.js}"></script>
-<script th:src="@{/assets/js/settings.js}"></script>
 </body>
 </html>

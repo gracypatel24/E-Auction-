@@ -150,72 +150,6 @@
         .links a:hover {
             color: #667eea;
         }
-        
-        .credentials-box {
-            background: #f8f9fa;
-            border-radius: 12px;
-            padding: 20px;
-            margin-top: 30px;
-            border: 1px dashed #667eea;
-        }
-        
-        .credentials-box h4 {
-            color: #333;
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-        
-        .credential-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid #e1e5eb;
-        }
-        
-        .credential-row:last-child {
-            border-bottom: none;
-        }
-        
-        .credential-label {
-            color: #6c757d;
-            font-size: 13px;
-            font-weight: 500;
-        }
-        
-        .credential-value {
-            background: white;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
-            color: #667eea;
-            border: 1px solid #667eea;
-        }
-        
-        .fill-btn {
-            text-align: center;
-            margin-top: 15px;
-        }
-        
-        .fill-btn button {
-            background: none;
-            border: 2px solid #667eea;
-            color: #667eea;
-            padding: 8px 20px;
-            border-radius: 25px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            margin: 0 5px;
-        }
-        
-        .fill-btn button:hover {
-            background: #667eea;
-            color: white;
-        }
     </style>
 </head>
 <body>
@@ -258,7 +192,6 @@
                 <a href="${pageContext.request.contextPath}/signup">Create Account</a>
                 <a href="${pageContext.request.contextPath}/forgetpassword">Forgot Password?</a>
             </div>
-            
         </div>
     </div>
 </body>

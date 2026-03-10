@@ -116,6 +116,11 @@
 		    <artifactId>mysql-connector-j</artifactId>
 		    <scope>runtime</scope>
 		</dependency>
+		<!-- Add this dependency if not already present -->
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
     </dependencies>
 
     <build>
