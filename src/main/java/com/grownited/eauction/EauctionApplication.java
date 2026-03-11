@@ -17,7 +17,12 @@ import com.cloudinary.Cloudinary;
 @SpringBootApplication
 @EntityScan(basePackages = "com.grownited.eauction.entity")
 @EnableJpaRepositories(basePackages = "com.grownited.eauction.repository")
-@ComponentScan(basePackages = {"com.grownited.eauction.controller", "com.grownited.eauction.config", "com.grownited.eauction.services"})
+@ComponentScan(basePackages = {
+    "com.grownited.eauction.controller",
+    "com.grownited.eauction.controller.participant",  // CRITICAL: Add this line
+    "com.grownited.eauction.config", 
+    "com.grownited.eauction.services"
+})
 public class EauctionApplication {
 
     public static void main(String[] args) {

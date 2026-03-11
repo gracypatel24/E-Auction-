@@ -16,25 +16,43 @@ public class ProductEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "product_id")
     private Integer productId;
     
+    @Column(name = "title", nullable = false, length = 255)
     private String title;
     
-    @Column(length = 5000) // Increase description length
+    @Column(name = "description", length = 5000)
     private String description;
     
+    @Column(name = "category", length = 100)
     private String category;
-    private Double startingBid;
-    private Double currentBid;
-    private LocalDate startDate;
-    private LocalDate endDate;
-    private String status; // ACTIVE, COMPLETED, CANCELLED
     
-    @Column(length = 500)
+    @Column(name = "starting_bid")
+    private Double startingBid;
+    
+    @Column(name = "current_bid")
+    private Double currentBid;
+    
+    @Column(name = "start_date")
+    private LocalDate startDate;
+    
+    @Column(name = "end_date")
+    private LocalDate endDate;
+    
+    @Column(name = "status", length = 50)
+    private String status;
+    
+    @Column(name = "image_url", length = 500)
     private String imageUrl;
     
-    private Integer sellerId; // User ID of seller
+    @Column(name = "seller_id")
+    private Integer sellerId;
+    
+    @Column(name = "bid_count")
     private Integer bidCount;
+    
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
     
     // Constructors

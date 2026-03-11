@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Participant Dashboard - E-Auction</title>
+    <title>My Bids - E-Auction</title>
     
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
-        /* ===== PARTICIPANT DASHBOARD STYLES ===== */
+        /* ===== PARTICIPANT STYLES ===== */
         
         * {
             margin: 0;
@@ -481,143 +481,43 @@
             padding: 30px;
         }
 
-        /* ===== WELCOME CARD ===== */
-        .welcome-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 15px;
-            padding: 30px;
-            color: white;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .welcome-text h2 {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-
-        .welcome-text p {
-            opacity: 0.9;
-            margin-bottom: 0;
-        }
-
-        .date-badge {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 15px 25px;
-            border-radius: 12px;
-            text-align: center;
-        }
-
-        .date-badge .day {
-            font-size: 28px;
-            font-weight: 700;
-            line-height: 1;
-        }
-
-        .date-badge .month {
-            font-size: 14px;
-            opacity: 0.9;
-        }
-
-        /* ===== STATS GRID ===== */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card {
+        /* ===== PAGE HEADER ===== */
+        .page-header {
             background: white;
-            border-radius: 12px;
-            padding: 20px;
+            border-radius: 15px;
+            padding: 25px 30px;
+            margin-bottom: 30px;
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
             display: flex;
-            align-items: center;
-            gap: 15px;
-            transition: all 0.3s;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.15);
-        }
-
-        .stat-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            flex-shrink: 0;
-        }
-
-        .stat-icon.blue {
-            background: rgba(102, 126, 234, 0.1);
-            color: #667eea;
-        }
-
-        .stat-icon.green {
-            background: rgba(40, 167, 69, 0.1);
-            color: #28a745;
-        }
-
-        .stat-icon.orange {
-            background: rgba(255, 193, 7, 0.1);
-            color: #ffc107;
-        }
-
-        .stat-icon.red {
-            background: rgba(220, 53, 69, 0.1);
-            color: #dc3545;
-        }
-
-        .stat-info h3 {
-            font-size: 24px;
-            font-weight: 700;
-            color: #333;
-            margin-bottom: 5px;
-        }
-
-        .stat-info p {
-            color: #6c757d;
-            font-size: 13px;
-            margin-bottom: 0;
-        }
-
-        /* ===== SECTION TITLE ===== */
-        .section-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: #333;
-            margin-bottom: 20px;
-            display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .view-all {
-            color: #667eea;
-            text-decoration: none;
-            font-size: 13px;
-            font-weight: 500;
+        .page-header h2 {
+            color: #333;
+            font-size: 24px;
+            font-weight: 700;
+            margin: 0;
         }
 
-        .view-all:hover {
-            text-decoration: underline;
+        .page-header h2 span {
+            color: #667eea;
+        }
+
+        .page-header .badge-count {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 14px;
         }
 
         /* ===== TABLE STYLES ===== */
         .table-wrapper {
             background: white;
-            border-radius: 12px;
-            padding: 20px;
+            border-radius: 15px;
+            padding: 25px;
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
             margin-bottom: 30px;
             overflow-x: auto;
@@ -632,32 +532,34 @@
             border-bottom: 2px solid #667eea;
             color: #495057;
             font-weight: 600;
-            font-size: 12px;
-            padding: 12px 10px;
+            font-size: 13px;
+            padding: 15px 10px;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
             text-align: left;
         }
 
         .table td {
-            padding: 12px 10px;
+            padding: 15px 10px;
             border-bottom: 1px solid #f0f0f0;
             color: #6c757d;
+            vertical-align: middle;
         }
 
-        .badge-success {
+        .badge-winning {
             background: #d4edda;
             color: #155724;
-            padding: 5px 12px;
+            padding: 6px 15px;
             border-radius: 30px;
             font-size: 12px;
             font-weight: 600;
             display: inline-block;
         }
 
-        .badge-danger {
+        .badge-outbid {
             background: #f8d7da;
             color: #721c24;
-            padding: 5px 12px;
+            padding: 6px 15px;
             border-radius: 30px;
             font-size: 12px;
             font-weight: 600;
@@ -665,11 +567,12 @@
         }
 
         .btn-sm {
-            padding: 5px 12px;
-            border-radius: 5px;
-            font-size: 11px;
+            padding: 6px 15px;
+            border-radius: 8px;
+            font-size: 12px;
             text-decoration: none;
             display: inline-block;
+            transition: all 0.3s;
         }
 
         .btn-primary {
@@ -681,94 +584,47 @@
         .btn-primary:hover {
             background: #5a67d8;
             color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
         }
 
-        /* ===== AUCTION GRID ===== */
-        .auction-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .auction-card {
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .auction-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.2);
-        }
-
-        .auction-image {
-            height: 180px;
-            width: 100%;
-            object-fit: cover;
-        }
-
-        .auction-details {
-            padding: 20px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .auction-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 8px;
-        }
-
-        .auction-category {
-            color: #667eea;
-            font-size: 12px;
-            font-weight: 500;
-            margin-bottom: 10px;
-        }
-
-        .auction-price {
-            font-size: 20px;
-            font-weight: 700;
-            color: #28a745;
-            margin-bottom: 10px;
-        }
-
-        .auction-meta {
-            display: flex;
-            justify-content: space-between;
-            color: #6c757d;
-            font-size: 12px;
-            margin-bottom: 15px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        .btn-view {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .btn-secondary {
+            background: #6c757d;
             color: white;
             border: none;
-            padding: 10px;
+            padding: 10px 25px;
             border-radius: 8px;
             text-decoration: none;
-            display: block;
-            text-align: center;
-            font-size: 13px;
-            font-weight: 500;
-            margin-top: auto;
+            display: inline-block;
             transition: all 0.3s;
         }
 
-        .btn-view:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        .btn-secondary:hover {
+            background: #5a6268;
             color: white;
+        }
+
+        /* ===== EMPTY STATE ===== */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-state i {
+            font-size: 70px;
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            color: #6c757d;
+            margin-bottom: 20px;
         }
 
         /* ===== FOOTER STYLES ===== */
@@ -838,13 +694,13 @@
             transform: translateY(-2px);
         }
 
-        /* ===== RESPONSIVE STYLES ===== */
-        @media (max-width: 1200px) {
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
+        /* ===== BACK BUTTON ===== */
+        .back-link {
+            text-align: center;
+            margin: 20px 0;
         }
 
+        /* ===== RESPONSIVE STYLES ===== */
         @media (max-width: 992px) {
             .participant-header {
                 left: 0;
@@ -864,14 +720,10 @@
         }
 
         @media (max-width: 768px) {
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .welcome-card {
+            .page-header {
                 flex-direction: column;
                 text-align: center;
-                gap: 20px;
+                gap: 15px;
             }
             
             .search-box {
@@ -882,24 +734,7 @@
                 flex-direction: column;
                 text-align: center;
             }
-            
-            .auction-grid {
-                grid-template-columns: 1fr;
-            }
         }
-
-        /* ===== UTILITY CLASSES ===== */
-        .text-primary { color: #667eea !important; }
-        .text-success { color: #28a745 !important; }
-        .text-danger { color: #dc3545 !important; }
-        .text-muted { color: #6c757d !important; }
-        .bg-primary { background: #667eea !important; }
-        .bg-success { background: #28a745 !important; }
-        .bg-danger { background: #dc3545 !important; }
-        .text-center { text-align: center; }
-        .mt-3 { margin-top: 1rem; }
-        .mb-4 { margin-bottom: 1.5rem; }
-        .mt-4 { margin-top: 1.5rem; }
     </style>
 </head>
 <body>
@@ -910,7 +745,7 @@
                 <i class="fas fa-bars"></i>
             </button>
             <div class="page-title">
-                <i class="fas fa-home"></i> Dashboard
+                <i class="fas fa-list"></i> My Bids
             </div>
         </div>
         
@@ -996,7 +831,7 @@
         <ul class="sidebar-menu">
             <li class="menu-category">MAIN</li>
             
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" href="${pageContext.request.contextPath}/participant/dashboard">
                     <i class="fas fa-home"></i>
                     <span class="menu-title">Dashboard</span>
@@ -1012,7 +847,7 @@
 
             <li class="menu-category">MY ACTIVITY</li>
 
-            <li class="nav-item">
+            <li class="nav-item active">
                 <a class="nav-link" href="${pageContext.request.contextPath}/participant/my-bids">
                     <i class="fas fa-list"></i>
                     <span class="menu-title">My Bids</span>
@@ -1056,145 +891,71 @@
     <!-- Main Wrapper -->
     <div class="main-wrapper" id="mainWrapper">
         <div class="content-area">
-            <!-- Welcome Card -->
-            <div class="welcome-card">
-                <div class="welcome-text">
-                    <h2>Welcome back, ${sessionScope.user.firstName} ${sessionScope.user.lastName}!</h2>
-                    <p>Here's what's happening with your auctions today.</p>
-                </div>
-                <div class="date-badge">
-                    <div class="day"><%= new java.text.SimpleDateFormat("dd").format(new java.util.Date()) %></div>
-                    <div class="month"><%= new java.text.SimpleDateFormat("MMMM yyyy").format(new java.util.Date()) %></div>
-                </div>
+            <!-- Page Header -->
+            <div class="page-header">
+                <h2><span>My</span> Bids</h2>
+                <span class="badge-count">Total Bids: ${totalBids}</span>
             </div>
             
-            <!-- Statistics Cards -->
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-icon blue">
-                        <i class="fas fa-gavel"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3>${totalBids}</h3>
-                        <p>Total Bids</p>
-                    </div>
-                </div>
-                
-                <div class="stat-card">
-                    <div class="stat-icon green">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3>${winningBids.size()}</h3>
-                        <p>Winning Bids</p>
-                    </div>
-                </div>
-                
-                <div class="stat-card">
-                    <div class="stat-icon orange">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3>${activeAuctions.size()}</h3>
-                        <p>Active Auctions</p>
-                    </div>
-                </div>
-                
-                <div class="stat-card">
-                    <div class="stat-icon red">
-                        <i class="fas fa-hourglass-half"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3>${endingSoon}</h3>
-                        <p>Ending Soon</p>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Recent Bids Section -->
-            <c:if test="${not empty myBids}">
-                <div class="section-title">
-                    <div><i class="fas fa-history"></i> Recent Bids</div>
-                    <a href="${pageContext.request.contextPath}/participant/my-bids" class="view-all">
-                        View All <i class="fas fa-arrow-right"></i>
-                    </a>
-                </div>
-                
-                <div class="table-wrapper">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Auction</th>
-                                <th>Bid Amount</th>
-                                <th>Date & Time</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <c:forEach items="${myBids}" var="bid" begin="0" end="4">
-                                <tr>
-                                    <td><strong>Auction #${bid.productId}</strong></td>
-                                    <td><strong>$${bid.bidAmount}</strong></td>
-                                    <td>${bid.bidTime}</td>
-                                    <td>
-                                        <c:choose>
-                                            <c:when test="${bid.status == 'WINNING'}">
-                                                <span class="badge-success">Winning</span>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <span class="badge-danger">Outbid</span>
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </td>
-                                    <td>
-                                        <a href="${pageContext.request.contextPath}/viewProduct?productId=${bid.productId}" 
-                                           class="btn-sm btn-primary">
-                                            <i class="fas fa-eye"></i> View
-                                        </a>
-                                    </td>
-                                </tr>
-                            </c:forEach>
-                        </tbody>
-                    </table>
-                </div>
-            </c:if>
-            
-            <!-- Active Auctions Section -->
-            <div class="section-title">
-                <div><i class="fas fa-gavel"></i> Active Auctions</div>
-                <span class="text-muted">${activeAuctions.size()} auctions available</span>
-            </div>
-            
-            <div class="auction-grid">
-                <c:forEach items="${activeAuctions}" var="auction">
-                    <div class="auction-card">
-                        <img src="${auction.imageUrl}" class="auction-image" alt="${auction.title}">
-                        <div class="auction-details">
-                            <div class="auction-title">${auction.title}</div>
-                            <div class="auction-category">
-                                <i class="fas fa-tag"></i> ${auction.category}
-                            </div>
-                            <div class="auction-price">$${auction.currentBid}</div>
-                            <div class="auction-meta">
-                                <span><i class="fas fa-gavel"></i> ${auction.bidCount} bids</span>
-                                <span><i class="far fa-clock"></i> Ends: ${auction.endDate}</span>
-                            </div>
-                            <a href="${pageContext.request.contextPath}/viewProduct?productId=${auction.productId}" 
-                               class="btn-view">
-                                <i class="fas fa-eye"></i> View Auction
+            <!-- Bids Table -->
+            <div class="table-wrapper">
+                <c:choose>
+                    <c:when test="${empty bids}">
+                        <div class="empty-state">
+                            <i class="fas fa-gavel"></i>
+                            <h3>No Bids Found</h3>
+                            <p class="text-muted">You haven't placed any bids yet. Start bidding on auctions now!</p>
+                            <a href="${pageContext.request.contextPath}/listProduct" class="btn-primary btn-sm" style="padding: 10px 25px;">
+                                <i class="fas fa-gavel"></i> Browse Auctions
                             </a>
                         </div>
-                    </div>
-                </c:forEach>
-                
-                <c:if test="${empty activeAuctions}">
-                    <div style="grid-column: 1/-1; text-align: center; padding: 50px;">
-                        <i class="fas fa-gavel" style="font-size: 60px; color: #ccc;"></i>
-                        <h4 class="mt-3">No Active Auctions</h4>
-                        <p class="text-muted">Check back later for new auctions.</p>
-                    </div>
-                </c:if>
+                    </c:when>
+                    <c:otherwise>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Auction</th>
+                                    <th>Bid Amount</th>
+                                    <th>Date & Time</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <c:forEach items="${bids}" var="bid">
+                                    <tr>
+                                        <td><strong>Auction #${bid.productId}</strong></td>
+                                        <td><strong style="color: #28a745; font-size: 16px;">$${bid.bidAmount}</strong></td>
+                                        <td>${bid.bidTime}</td>
+                                        <td>
+                                            <c:choose>
+                                                <c:when test="${bid.status == 'WINNING'}">
+                                                    <span class="badge-winning"><i class="fas fa-check-circle"></i> Winning</span>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <span class="badge-outbid"><i class="fas fa-times-circle"></i> Outbid</span>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </td>
+                                        <td>
+                                            <a href="${pageContext.request.contextPath}/viewProduct?productId=${bid.productId}" 
+                                               class="btn-sm btn-primary">
+                                                <i class="fas fa-eye"></i> View
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                            </tbody>
+                        </table>
+                    </c:otherwise>
+                </c:choose>
+            </div>
+            
+            <!-- Back to Dashboard -->
+            <div class="back-link">
+                <a href="${pageContext.request.contextPath}/participant/dashboard" class="btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
             </div>
             
             <!-- Footer -->

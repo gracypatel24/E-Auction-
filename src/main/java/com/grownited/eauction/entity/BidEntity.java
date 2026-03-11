@@ -2,11 +2,13 @@ package com.grownited.eauction.entity;
 
 import java.time.LocalDateTime;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "bids")
@@ -14,19 +16,33 @@ public class BidEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "bid_id")
     private Integer bidId;
     
+    @Column(name = "product_id")
     private Integer productId;
+    
+    @Column(name = "user_id")
     private Integer userId;
+    
+    @Column(name = "bid_amount")
     private Double bidAmount;
+    
+    @Column(name = "bid_time")
     private LocalDateTime bidTime;
-    private String status; // WINNING, OUTBID, WON, LOST
+    
+    @Column(name = "status", length = 50)
+    private String status;
+    
+    @Transient
+    private ProductEntity product; // Not stored in database
     
     public BidEntity() {
         this.bidTime = LocalDateTime.now();
         this.status = "WINNING";
     }
     
+    // Getters and Setters
     public Integer getBidId() {
         return bidId;
     }
@@ -73,5 +89,13 @@ public class BidEntity {
     
     public void setStatus(String status) {
         this.status = status;
+    }
+    
+    public ProductEntity getProduct() {
+        return product;
+    }
+    
+    public void setProduct(ProductEntity product) {
+        this.product = product;
     }
 }

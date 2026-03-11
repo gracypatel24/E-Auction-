@@ -120,6 +120,7 @@ public class SessionController {
             user.setBirthYear(birthYear);
             user.setGender(gender);
             
+            // Set role based on userTypeId
             if (userTypeId == 1) {
                 user.setRole("ADMIN");
             } else {
@@ -146,15 +147,13 @@ public class SessionController {
             
             userDetailRepository.save(userDetail);
             
-            // COMMENT OUT OR REMOVE THIS LINE
-            // mailerService.sendWelcomeMail(savedUser);
-            
-            // Auto login
+            // Auto login after registration
             session.setAttribute("user", savedUser);
             session.setAttribute("userId", savedUser.getUserId());
             session.setAttribute("userRole", savedUser.getRole());
             session.setAttribute("userEmail", savedUser.getEmail());
             
+            // Redirect based on role
             if ("ADMIN".equals(savedUser.getRole())) {
                 return "redirect:/admin-dashboard";
             } else {
@@ -184,8 +183,6 @@ public class SessionController {
         if (user.isPresent()) {
             user.get().setOtp(token);
             userRepository.save(user.get());
-            // COMMENT OUT THIS LINE
-            // mailerService.sendPasswordResetMail(email, token);
         }
         
         model.addAttribute("successMessage", 
@@ -194,25 +191,12 @@ public class SessionController {
         return "ForgetPassword";
     }
 
-    // REMOVED: Duplicate admin profile method - this is now handled by AdminController
-    
-    // Admin Mail
-    @GetMapping("/admin/mail")
-    public String adminMail(HttpSession session) {
-        if (session.getAttribute("user") == null) {
-            return "redirect:/login";
-        }
-        return "AdminMail";
-    }
-
-    // Logout
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
         return "redirect:/login";
     }
 
-    // User Profile (for participants)
     @GetMapping("/profile")
     public String viewProfile(HttpSession session, Model model) {
         if (session.getAttribute("user") == null) {
@@ -229,6 +213,6 @@ public class SessionController {
             return "Profile";
         }
         
-        return "redirect:/dashboard";
+        return "redirect:/participant/dashboard";
     }
 }
