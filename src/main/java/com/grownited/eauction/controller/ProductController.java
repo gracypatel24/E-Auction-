@@ -199,11 +199,11 @@ public class ProductController {
         
         return "redirect:/listProduct";
     }
-
+ // EDIT PRODUCT - Display edit form
     @GetMapping("/editProduct")
-    public String editAuction(@RequestParam("productId") Integer productId, 
-                             Model model, 
-                             HttpSession session) {
+    public String editProduct(@RequestParam("productId") Integer productId, 
+                              Model model, 
+                              HttpSession session) {
         if (session.getAttribute("user") == null) {
             return "redirect:/login";
         }
@@ -219,7 +219,9 @@ public class ProductController {
                 String userRole = (String) session.getAttribute("userRole");
                 
                 if ("ADMIN".equals(userRole) || currentUserId.equals(product.getSellerId())) {
-                    String[] categories = {"Electronics", "Fashion", "Vehicles", "Art", "Jewelry", "Collectibles", "Real Estate", "Sports", "Books", "Music", "Toys", "Other"};
+                    String[] categories = {"Electronics", "Fashion", "Vehicles", "Art", "Jewelry", 
+                                          "Collectibles", "Real Estate", "Sports", "Books", "Music", 
+                                          "Toys", "Other"};
                     model.addAttribute("categories", categories);
                     model.addAttribute("auction", product);
                     return "EditProduct";
@@ -234,8 +236,9 @@ public class ProductController {
         return "redirect:/listProduct";
     }
 
+    // UPDATE PRODUCT - Process the form submission
     @PostMapping("/updateProduct")
-    public String updateAuction(
+    public String updateProduct(
             @RequestParam("productId") Integer productId,
             @RequestParam("title") String title,
             @RequestParam("description") String description,
@@ -297,6 +300,8 @@ public class ProductController {
         return "redirect:/listProduct";
     }
 
+        
+      
     @GetMapping("/deleteProduct")
     public String deleteAuction(@RequestParam("productId") Integer productId, 
                                 HttpSession session,

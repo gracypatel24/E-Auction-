@@ -651,10 +651,10 @@
                                    class="btn-action btn-view" title="View">
                                     <i class="fas fa-eye"></i>
                                 </a>
-                                <a href="${pageContext.request.contextPath}/editProduct?productId=${auction.productId}" 
-                                   class="btn-action btn-edit" title="Edit">
-                                    <i class="fas fa-edit"></i>
-                                </a>
+								<a href="${pageContext.request.contextPath}/editProduct?productId=${auction.productId}" 
+								   class="btn-action btn-edit" title="Edit">
+								    <i class="fas fa-edit"></i>
+								</a>
                                 <a href="#" onclick="confirmDelete(${auction.productId})" 
                                    class="btn-action btn-delete" title="Delete">
                                     <i class="fas fa-trash"></i>
