@@ -1,45 +1,55 @@
 package com.grownited.eauction.services;
 
-// Comment out these imports
-// import org.springframework.beans.factory.annotation.Autowired;
-// import org.springframework.mail.SimpleMailMessage;
-// import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
-
-import com.grownited.eauction.entity.UserEntity;
 
 @Service
 public class MailerService {
-
-    // Comment out this field completely
-    // @Autowired
-    // private JavaMailSender mailSender;
-
-    public void sendWelcomeMail(UserEntity user) {
-        // Just print to console instead of sending email
-        System.out.println("=== WELCOME EMAIL ===");
-        System.out.println("To: " + user.getEmail());
-        System.out.println("Subject: Welcome to E-Auction!");
-        System.out.println("Body: Dear " + user.getFirstName() + ", welcome to E-Auction!");
-        System.out.println("====================");
+    
+    @Autowired(required = false)
+    private JavaMailSender mailSender;
+    
+    public void sendEmail(String to, String subject, String body) {
+        if (mailSender == null) {
+            System.out.println("📧 Email not configured. Would send to: " + to);
+            System.out.println("   Subject: " + subject);
+            System.out.println("   Body: " + body);
+            return;
+        }
+        
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setTo(to);
+            message.setSubject(subject);
+            message.setText(body);
+            message.setFrom("noreply@eauction.com");
+            mailSender.send(message);
+            System.out.println("✅ Email sent to: " + to);
+        } catch (Exception e) {
+            System.out.println("❌ Email sending failed: " + e.getMessage());
+        }
     }
-
-    public void sendPasswordResetMail(String email, String token) {
-        // Just print to console instead of sending email
-        System.out.println("=== PASSWORD RESET EMAIL ===");
-        System.out.println("To: " + email);
-        System.out.println("Subject: Password Reset Request - E-Auction");
-        System.out.println("Token: " + token);
-        System.out.println("Reset Link: http://localhost:9999/reset-password?token=" + token);
-        System.out.println("============================");
+    
+    public void sendWelcomeEmail(String to, String name) {
+        String subject = "Welcome to E-Auction!";
+        String body = String.format(
+            "Dear %s,\n\n" +
+            "Welcome to E-Auction! Your account has been successfully created.\n\n" +
+            "You can now start bidding on exciting items.\n\n" +
+            "Best regards,\n" +
+            "The E-Auction Team", name);
+        sendEmail(to, subject, body);
     }
-
-    public void sendBidNotification(String email, String productName, Double amount) {
-        // Just print to console instead of sending email
-        System.out.println("=== BID NOTIFICATION EMAIL ===");
-        System.out.println("To: " + email);
-        System.out.println("Subject: Bid Update - E-Auction");
-        System.out.println("Message: Your bid of $" + amount + " on " + productName + " has been placed successfully.");
-        System.out.println("==============================");
+    
+    public void sendBidConfirmation(String to, String productName, Double bidAmount) {
+        String subject = "Bid Placed Successfully";
+        String body = String.format(
+            "Your bid of ₹%.2f has been placed successfully for '%s'.\n\n" +
+            "We'll notify you if you're outbid.\n\n" +
+            "Good luck!\n" +
+            "The E-Auction Team", bidAmount, productName);
+        sendEmail(to, subject, body);
     }
 }

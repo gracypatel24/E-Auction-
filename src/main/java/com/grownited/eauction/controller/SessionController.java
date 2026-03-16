@@ -1,6 +1,6 @@
 package com.grownited.eauction.controller;
 
-import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,7 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.grownited.eauction.entity.UserDetailEntity;
 import com.grownited.eauction.entity.UserEntity;
@@ -19,8 +19,6 @@ import com.grownited.eauction.entity.UserTypeEntity;
 import com.grownited.eauction.repository.UserDetailRepository;
 import com.grownited.eauction.repository.UserRepository;
 import com.grownited.eauction.repository.UserTypeRepository;
-import com.grownited.eauction.services.CloudinaryService;
-import com.grownited.eauction.services.MailerService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -39,51 +37,16 @@ public class SessionController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private CloudinaryService cloudinaryService;
-
-    @Autowired
-    private MailerService mailerService;
+    @GetMapping("/login")
+    public String login() {
+        return "auth/login";
+    }
 
     @GetMapping("/signup")
-    public String openSignupPage(Model model) {
-        List<UserTypeEntity> allUserType = userTypeRepository.findAll();
-        model.addAttribute("allUserType", allUserType);
-        return "Signup";
-    }
-
-    @GetMapping("/login")
-    public String openLoginPage() {
-        return "Login";
-    }
-
-    @PostMapping("/authenticate")
-    public String authenticate(@RequestParam String email, 
-                              @RequestParam String password, 
-                              Model model, 
-                              HttpSession session) {
-        
-        Optional<UserEntity> op = userRepository.findByEmail(email);
-
-        if (op.isPresent()) {
-            UserEntity dbUser = op.get();
-            
-            if (passwordEncoder.matches(password, dbUser.getPassword())) {
-                session.setAttribute("user", dbUser);
-                session.setAttribute("userId", dbUser.getUserId());
-                session.setAttribute("userRole", dbUser.getRole());
-                session.setAttribute("userEmail", dbUser.getEmail());
-
-                if ("ADMIN".equals(dbUser.getRole())) {
-                    return "redirect:/admin-dashboard";
-                } else {
-                    return "redirect:/participant/dashboard";
-                }
-            }
-        }
-
-        model.addAttribute("error", "Invalid Credentials");
-        return "Login";
+    public String signup(Model model) {
+        List<UserTypeEntity> userTypes = userTypeRepository.findAll();
+        model.addAttribute("allUserType", userTypes);
+        return "auth/signup";
     }
 
     @PostMapping("/register")
@@ -91,128 +54,96 @@ public class SessionController {
                           @RequestParam String lastName,
                           @RequestParam String email,
                           @RequestParam String password,
-                          @RequestParam(required = false) String contactNum,
-                          @RequestParam(required = false) Integer birthYear,
-                          @RequestParam(required = false) String gender,
                           @RequestParam Integer userTypeId,
-                          @RequestParam(required = false) String city,
-                          @RequestParam(required = false) String state,
-                          @RequestParam(required = false) String country,
-                          @RequestParam(required = false) MultipartFile profilePic,
                           HttpSession session,
+                          RedirectAttributes redirectAttributes,
                           Model model) {
         
         try {
-            Optional<UserEntity> existingUser = userRepository.findByEmail(email);
-            if (existingUser.isPresent()) {
-                model.addAttribute("error", "Email already registered");
-                List<UserTypeEntity> allUserType = userTypeRepository.findAll();
-                model.addAttribute("allUserType", allUserType);
-                return "Signup";
+            // Check if email exists
+            if (userRepository.findByEmail(email).isPresent()) {
+                model.addAttribute("error", "Email already exists");
+                model.addAttribute("allUserType", userTypeRepository.findAll());
+                return "auth/signup";
             }
             
+            // Get UserType
+            UserTypeEntity userType = userTypeRepository.findById(userTypeId)
+                .orElseThrow(() -> new RuntimeException("User type not found"));
+            
+            // Create user
             UserEntity user = new UserEntity();
-            user.setFirstName(firstName);
-            user.setLastName(lastName);
             user.setEmail(email);
             user.setPassword(passwordEncoder.encode(password));
-            user.setContactNum(contactNum);
-            user.setBirthYear(birthYear);
-            user.setGender(gender);
-            
-            // Set role based on userTypeId
-            if (userTypeId == 1) {
-                user.setRole("ADMIN");
-            } else {
-                user.setRole("PARTICIPANT");
-            }
-            
-            user.setActive(true);
-            user.setCreatedAt(LocalDate.now());
-            
-            // Upload profile picture if provided
-            if (profilePic != null && !profilePic.isEmpty()) {
-                String profilePicUrl = cloudinaryService.uploadImage(profilePic);
-                user.setProfilePicURL(profilePicUrl);
-            }
+            user.setUserType(userType);
+            user.setIsActive(true);
+            user.setCreatedAt(new Date());
+            user.setUpdatedAt(new Date());
             
             UserEntity savedUser = userRepository.save(user);
             
+            // Create user details
             UserDetailEntity userDetail = new UserDetailEntity();
-            userDetail.setUserId(savedUser.getUserId());
-            userDetail.setCity(city);
-            userDetail.setState(state);
-            userDetail.setCountry(country != null ? country : "India");
-            userDetail.setUserTypeId(userTypeId);
+            userDetail.setFirstName(firstName);
+            userDetail.setLastName(lastName);
+            userDetail.setUser(savedUser);
+            userDetail.setCreatedAt(new Date());
+            userDetail.setUpdatedAt(new Date());
             
             userDetailRepository.save(userDetail);
             
-            // Auto login after registration
+            // Auto login
             session.setAttribute("user", savedUser);
             session.setAttribute("userId", savedUser.getUserId());
-            session.setAttribute("userRole", savedUser.getRole());
-            session.setAttribute("userEmail", savedUser.getEmail());
+            session.setAttribute("userType", savedUser.getUserType().getUserTypeName());
             
-            // Redirect based on role
-            if ("ADMIN".equals(savedUser.getRole())) {
-                return "redirect:/admin-dashboard";
+            redirectAttributes.addFlashAttribute("success", "Registration successful!");
+            
+            if ("ADMIN".equals(savedUser.getUserType().getUserTypeName())) {
+                return "redirect:/admin/dashboard";
             } else {
-                return "redirect:/participant/dashboard";
+                return "redirect:/user/dashboard";
             }
             
         } catch (Exception e) {
             e.printStackTrace();
             model.addAttribute("error", "Registration failed: " + e.getMessage());
-            List<UserTypeEntity> allUserType = userTypeRepository.findAll();
-            model.addAttribute("allUserType", allUserType);
-            return "Signup";
+            model.addAttribute("allUserType", userTypeRepository.findAll());
+            return "auth/signup";
         }
     }
 
-    @GetMapping("/forgetpassword")
-    public String openForgetPassword() {
-        return "ForgetPassword";
-    }
-
-    @PostMapping("/forgetpassword")
-    public String processForgetPassword(@RequestParam String email, Model model) {
-        Optional<UserEntity> user = userRepository.findByEmail(email);
+    @PostMapping("/authenticate")
+    public String authenticate(@RequestParam String email,
+                              @RequestParam String password,
+                              Model model,
+                              HttpSession session) {
         
-        String token = "reset-token-" + System.currentTimeMillis();
+        Optional<UserEntity> userOpt = userRepository.findByEmail(email);
         
-        if (user.isPresent()) {
-            user.get().setOtp(token);
-            userRepository.save(user.get());
+        if (userOpt.isPresent()) {
+            UserEntity user = userOpt.get();
+            
+            if (passwordEncoder.matches(password, user.getPassword())) {
+                session.setAttribute("user", user);
+                session.setAttribute("userId", user.getUserId());
+                session.setAttribute("userType", user.getUserType().getUserTypeName());
+                
+                if ("ADMIN".equals(user.getUserType().getUserTypeName())) {
+                    return "redirect:/admin/dashboard";
+                } else {
+                    return "redirect:/user/dashboard";
+                }
+            }
         }
         
-        model.addAttribute("successMessage", 
-            "If an account exists with this email, you will receive password reset instructions shortly.");
-        
-        return "ForgetPassword";
+        model.addAttribute("error", "Invalid email or password");
+        return "auth/login";
     }
 
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
         return "redirect:/login";
-    }
-
-    @GetMapping("/profile")
-    public String viewProfile(HttpSession session, Model model) {
-        if (session.getAttribute("user") == null) {
-            return "redirect:/login";
-        }
-        
-        Integer userId = (Integer) session.getAttribute("userId");
-        Optional<UserEntity> user = userRepository.findById(userId);
-        Optional<UserDetailEntity> userDetail = userDetailRepository.findByUserId(userId);
-        
-        if (user.isPresent()) {
-            model.addAttribute("user", user.get());
-            model.addAttribute("userDetail", userDetail.orElse(null));
-            return "Profile";
-        }
-        
-        return "redirect:/participant/dashboard";
     }
 }

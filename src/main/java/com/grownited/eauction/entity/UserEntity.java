@@ -1,114 +1,58 @@
 package com.grownited.eauction.entity;
 
-import java.time.LocalDate;
+import javax.persistence.*;
+import java.util.Date;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 
-@Entity // create table
-@Table(name = "user1") // this will assign table name => users
+@Entity
+@Table(name = "users")
 public class UserEntity {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
+    private Integer userId;
+    
+    @Column(name = "email", unique = true, nullable = false)
+    private String email;
+    
+    @Column(name = "password", nullable = false)
+    private String password;
+    
+    @Column(name = "is_active")
+    private Boolean isActive = true;
+    
+    @ManyToOne
+    @JoinColumn(name = "user_type_id")
+    private UserTypeEntity userType;
+    
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "created_at")
+    private Date createdAt;
+    
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "updated_at")
+    private Date updatedAt;
+    
+    // Getters and Setters
+    public Integer getUserId() { return userId; }
+    public void setUserId(Integer userId) { this.userId = userId; }
+    
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+    
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
+    
+    public Boolean getIsActive() { return isActive; }
+    public void setIsActive(Boolean isActive) { this.isActive = isActive; }
+    
+    public UserTypeEntity getUserType() { return userType; }
+    public void setUserType(UserTypeEntity userType) { this.userType = userType; }
+ // Add these if missing
+    public Date getCreatedAt() { return createdAt; }
+    public void setCreatedAt(Date createdAt) { this.createdAt = createdAt; }
 
-	@Id // primary key
-	@GeneratedValue(strategy = GenerationType.IDENTITY) // auto increment
-	private Integer userId;
-	private String firstName;
-	private String lastName;
-	private String email;
-	private String password;
-	private LocalDate createdAt;  
-	private String role; //admin , participant , judge
-	private String gender;
-	private Integer birthYear;
-	private String contactNum; 
-	private String profilePicURL;
-	private String otp;
-	private Boolean active;
-	
-	public LocalDate getCreatedAt() {
-		return createdAt;
-	}
-	public void setCreatedAt(LocalDate createdAt) {
-		this.createdAt = createdAt;
-	}
-	public Integer getUserId() {
-		return userId;
-	}
-	public void setUserId(Integer userId) {
-		this.userId = userId;
-	}
-	public String getFirstName() {
-		return firstName;
-	}
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-	public String getLastName() {
-		return lastName;
-	}
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-	public String getEmail() {
-		return email;
-	}
-	public void setEmail(String email) {
-		this.email = email;
-	}
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	public String getRole() {
-		return role;
-	}
-	public void setRole(String role) {
-		this.role = role;
-	}
-	public String getGender() {
-		return gender;
-	}
-	public void setGender(String gender) {
-		this.gender = gender;
-	}
-	public Integer getBirthYear() {
-		return birthYear;
-	}
-	public void setBirthYear(Integer birthYear) {
-		this.birthYear = birthYear;
-	}
-	public String getContactNum() {
-		return contactNum;
-	}
-	public void setContactNum(String contactNum) {
-		this.contactNum = contactNum;
-	}
-	public String getProfilePicURL() {
-		return profilePicURL;
-	}
-	public void setProfilePicURL(String profilePicURL) {
-		this.profilePicURL = profilePicURL;
-	}
-	public String getOtp() {
-		return otp;
-	}
-	public void setOtp(String otp) {
-		this.otp = otp;
-	}
-	public Boolean getActive() {
-		return active;
-	}
-	public void setActive(Boolean active) {
-		this.active = active;
-	}
-
-	
-	
-	
-	
+    public Date getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(Date updatedAt) { this.updatedAt = updatedAt; }
 }

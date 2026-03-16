@@ -1,10 +1,11 @@
 package com.grownited.eauction.repository;
 
+import com.grownited.eauction.entity.CategoryEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import java.util.Optional;
 
-import com.grownited.eauction.entity.CategoryEntity;
 @Repository
-public interface CategoryRepository extends JpaRepository<CategoryEntity, Integer>{
-
+public interface CategoryRepository extends JpaRepository<CategoryEntity, Integer> {
+    Optional<CategoryEntity> findByCategoryName(String categoryName);
 }

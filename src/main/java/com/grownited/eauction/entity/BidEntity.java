@@ -1,101 +1,59 @@
 package com.grownited.eauction.entity;
 
-import java.time.LocalDateTime;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
+import javax.persistence.*;
+import java.math.BigDecimal;
+import java.util.Date;
 
 @Entity
 @Table(name = "bids")
 public class BidEntity {
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "bid_id")
     private Integer bidId;
     
-    @Column(name = "product_id")
-    private Integer productId;
+    @ManyToOne
+    @JoinColumn(name = "product_id", nullable = false)
+    private ProductEntity product;
     
-    @Column(name = "user_id")
-    private Integer userId;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserEntity user;
     
-    @Column(name = "bid_amount")
-    private Double bidAmount;
+    @Column(name = "bid_amount", precision = 10, scale = 2, nullable = false)
+    private BigDecimal bidAmount;
     
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "bid_time")
-    private LocalDateTime bidTime;
+    private Date bidTime;
     
-    @Column(name = "status", length = 50)
-    private String status;
+    @Column(name = "is_winning")
+    private Boolean isWinning = false;
     
-    @Transient
-    private ProductEntity product; // Not stored in database
-    
-    public BidEntity() {
-        this.bidTime = LocalDateTime.now();
-        this.status = "WINNING";
+    @PrePersist
+    protected void onCreate() {
+        bidTime = new Date();
     }
+    
+    public BidEntity() {}
     
     // Getters and Setters
-    public Integer getBidId() {
-        return bidId;
-    }
+    public Integer getBidId() { return bidId; }
+    public void setBidId(Integer bidId) { this.bidId = bidId; }
     
-    public void setBidId(Integer bidId) {
-        this.bidId = bidId;
-    }
+    public ProductEntity getProduct() { return product; }
+    public void setProduct(ProductEntity product) { this.product = product; }
     
-    public Integer getProductId() {
-        return productId;
-    }
+    public UserEntity getUser() { return user; }
+    public void setUser(UserEntity user) { this.user = user; }
     
-    public void setProductId(Integer productId) {
-        this.productId = productId;
-    }
+    public BigDecimal getBidAmount() { return bidAmount; }
+    public void setBidAmount(BigDecimal bidAmount) { this.bidAmount = bidAmount; }
     
-    public Integer getUserId() {
-        return userId;
-    }
+    public Date getBidTime() { return bidTime; }
+    public void setBidTime(Date bidTime) { this.bidTime = bidTime; }
     
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-    
-    public Double getBidAmount() {
-        return bidAmount;
-    }
-    
-    public void setBidAmount(Double bidAmount) {
-        this.bidAmount = bidAmount;
-    }
-    
-    public LocalDateTime getBidTime() {
-        return bidTime;
-    }
-    
-    public void setBidTime(LocalDateTime bidTime) {
-        this.bidTime = bidTime;
-    }
-    
-    public String getStatus() {
-        return status;
-    }
-    
-    public void setStatus(String status) {
-        this.status = status;
-    }
-    
-    public ProductEntity getProduct() {
-        return product;
-    }
-    
-    public void setProduct(ProductEntity product) {
-        this.product = product;
-    }
+    public Boolean getIsWinning() { return isWinning; }
+    public void setIsWinning(Boolean isWinning) { this.isWinning = isWinning; }
 }

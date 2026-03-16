@@ -1,169 +1,113 @@
 package com.grownited.eauction.entity;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import javax.persistence.*;
+import java.math.BigDecimal;
+import java.util.Date;
 
 @Entity
-@Table(name = "product")
+@Table(name = "products")
 public class ProductEntity {
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "product_id")
     private Integer productId;
     
-    @Column(name = "title", nullable = false, length = 255)
+    @Column(name = "title", nullable = false, length = 200)
     private String title;
     
-    @Column(name = "description", length = 5000)
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
     
-    @Column(name = "category", length = 100)
-    private String category;
+    @Column(name = "starting_price", precision = 10, scale = 2, nullable = false)
+    private BigDecimal startingPrice;
     
-    @Column(name = "starting_bid")
-    private Double startingBid;
-    
-    @Column(name = "current_bid")
-    private Double currentBid;
-    
-    @Column(name = "start_date")
-    private LocalDate startDate;
-    
-    @Column(name = "end_date")
-    private LocalDate endDate;
-    
-    @Column(name = "status", length = 50)
-    private String status;
+    @Column(name = "current_price", precision = 10, scale = 2)
+    private BigDecimal currentPrice;
     
     @Column(name = "image_url", length = 500)
     private String imageUrl;
     
-    @Column(name = "seller_id")
-    private Integer sellerId;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "auction_start_date")
+    private Date auctionStartDate;
     
-    @Column(name = "bid_count")
-    private Integer bidCount;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "auction_end_date")
+    private Date auctionEndDate;
     
+    @Column(name = "status", length = 20)
+    private String status = "ACTIVE";
+    
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private CategoryEntity category;
+    
+    @ManyToOne
+    @JoinColumn(name = "seller_id", nullable = false)
+    private UserEntity seller;
+    
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    private Date createdAt;
     
-    // Constructors
-    public ProductEntity() {
-        this.bidCount = 0;
-        this.currentBid = 0.0;
-        this.createdAt = LocalDateTime.now();
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "updated_at")
+    private Date updatedAt;
+    
+    @PrePersist
+    protected void onCreate() {
+        createdAt = new Date();
+        updatedAt = new Date();
+        if (currentPrice == null) {
+            currentPrice = startingPrice;
+        }
     }
+    
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = new Date();
+    }
+    
+    public ProductEntity() {}
     
     // Getters and Setters
-    public Integer getProductId() {
-        return productId;
-    }
+    public Integer getProductId() { return productId; }
+    public void setProductId(Integer productId) { this.productId = productId; }
     
-    public void setProductId(Integer productId) {
-        this.productId = productId;
-    }
+    public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; }
     
-    public String getTitle() {
-        return title;
-    }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
     
-    public void setTitle(String title) {
-        this.title = title;
-    }
+    public BigDecimal getStartingPrice() { return startingPrice; }
+    public void setStartingPrice(BigDecimal startingPrice) { this.startingPrice = startingPrice; }
     
-    public String getDescription() {
-        return description;
-    }
+    public BigDecimal getCurrentPrice() { return currentPrice; }
+    public void setCurrentPrice(BigDecimal currentPrice) { this.currentPrice = currentPrice; }
     
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
     
-    public String getCategory() {
-        return category;
-    }
+    public Date getAuctionStartDate() { return auctionStartDate; }
+    public void setAuctionStartDate(Date auctionStartDate) { this.auctionStartDate = auctionStartDate; }
     
-    public void setCategory(String category) {
-        this.category = category;
-    }
+    public Date getAuctionEndDate() { return auctionEndDate; }
+    public void setAuctionEndDate(Date auctionEndDate) { this.auctionEndDate = auctionEndDate; }
     
-    public Double getStartingBid() {
-        return startingBid;
-    }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
     
-    public void setStartingBid(Double startingBid) {
-        this.startingBid = startingBid;
-    }
+    public CategoryEntity getCategory() { return category; }
+    public void setCategory(CategoryEntity category) { this.category = category; }
     
-    public Double getCurrentBid() {
-        return currentBid;
-    }
+    public UserEntity getSeller() { return seller; }
+    public void setSeller(UserEntity seller) { this.seller = seller; }
     
-    public void setCurrentBid(Double currentBid) {
-        this.currentBid = currentBid;
-    }
+    public Date getCreatedAt() { return createdAt; }
+    public void setCreatedAt(Date createdAt) { this.createdAt = createdAt; }
     
-    public LocalDate getStartDate() {
-        return startDate;
-    }
-    
-    public void setStartDate(LocalDate startDate) {
-        this.startDate = startDate;
-    }
-    
-    public LocalDate getEndDate() {
-        return endDate;
-    }
-    
-    public void setEndDate(LocalDate endDate) {
-        this.endDate = endDate;
-    }
-    
-    public String getStatus() {
-        return status;
-    }
-    
-    public void setStatus(String status) {
-        this.status = status;
-    }
-    
-    public String getImageUrl() {
-        return imageUrl;
-    }
-    
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-    
-    public Integer getSellerId() {
-        return sellerId;
-    }
-    
-    public void setSellerId(Integer sellerId) {
-        this.sellerId = sellerId;
-    }
-    
-    public Integer getBidCount() {
-        return bidCount;
-    }
-    
-    public void setBidCount(Integer bidCount) {
-        this.bidCount = bidCount;
-    }
-    
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-    
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
+    public Date getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(Date updatedAt) { this.updatedAt = updatedAt; }
 }

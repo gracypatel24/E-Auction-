@@ -2,48 +2,50 @@ package com.grownited.eauction.services;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.util.Map;
 
 @Service
 public class CloudinaryService {
-
-    @Autowired
+    
     private Cloudinary cloudinary;
-
-    public String uploadImage(MultipartFile file) {
-        try {
-            if (file.isEmpty()) {
-                return null;
-            }
-            Map uploadResult = cloudinary.uploader().upload(file.getBytes(), 
-                ObjectUtils.asMap(
-                    "folder", "eauction",
-                    "public_id", System.currentTimeMillis() + ""
-                ));
-            return (String) uploadResult.get("url");
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+    
+    @Value("${cloudinary.cloud-name}")
+    private String cloudName;
+    
+    @Value("${cloudinary.api-key}")
+    private String apiKey;
+    
+    @Value("${cloudinary.api-secret}")
+    private String apiSecret;
+    
+    private Cloudinary getCloudinary() {
+        if (cloudinary == null) {
+            cloudinary = new Cloudinary(ObjectUtils.asMap(
+                "cloud_name", cloudName,
+                "api_key", apiKey,
+                "api_secret", apiSecret));
         }
+        return cloudinary;
     }
-
-    public boolean deleteImage(String imageUrl) {
-        try {
-            if (imageUrl == null || imageUrl.isEmpty()) {
-                return false;
-            }
-            // Extract public ID from URL
-            String publicId = imageUrl.substring(imageUrl.lastIndexOf("/") + 1, imageUrl.lastIndexOf("."));
-            Map result = cloudinary.uploader().destroy("eauction/" + publicId, ObjectUtils.emptyMap());
-            return "ok".equals(result.get("result"));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+    
+    public String uploadImage(MultipartFile file) throws IOException {
+        Map uploadResult = getCloudinary().uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+        return (String) uploadResult.get("url");
+    }
+    
+    public Map deleteImage(String imageUrl) throws IOException {
+        String publicId = extractPublicId(imageUrl);
+        return getCloudinary().uploader().destroy(publicId, ObjectUtils.emptyMap());
+    }
+    
+    private String extractPublicId(String imageUrl) {
+        // Extract public ID from Cloudinary URL
+        String[] parts = imageUrl.split("/");
+        String lastPart = parts[parts.length - 1];
+        return lastPart.substring(0, lastPart.lastIndexOf('.'));
     }
 }
