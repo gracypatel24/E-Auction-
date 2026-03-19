@@ -281,18 +281,21 @@
     
     <div class="header-right">
         <div class="nav-links">
-            <a href="${pageContext.request.contextPath}/admin-dashboard" class="nav-link-item">
+            <a href="${pageContext.request.contextPath}/admin/dashboard" class="nav-link-item">
                 <i class="fas fa-home"></i> Dashboard
             </a>
-            <a href="${pageContext.request.contextPath}/listProduct" class="nav-link-item">
+            <a href="${pageContext.request.contextPath}/admin/products" class="nav-link-item">
                 <i class="fas fa-gavel"></i> Auctions
             </a>
-            <a href="${pageContext.request.contextPath}/listUser" class="nav-link-item">
+            <a href="${pageContext.request.contextPath}/admin/users" class="nav-link-item">
                 <i class="fas fa-users"></i> Users
+            </a>
+            <a href="${pageContext.request.contextPath}/admin/category/list" class="nav-link-item">
+                <i class="fas fa-tags"></i> Categories
             </a>
         </div>
         
-        <div class="mail-icon">
+        <div class="mail-icon" onclick="window.location.href='${pageContext.request.contextPath}/admin/mail'">
             <i class="fas fa-envelope"></i>
             <span class="mail-badge">3</span>
         </div>
@@ -301,7 +304,7 @@
             <div class="user-profile" onclick="toggleDropdown()">
                 <div class="user-info">
                     <div class="name">${sessionScope.user.firstName} ${sessionScope.user.lastName}</div>
-                    <div class="role">${sessionScope.user.role}</div>
+                    <div class="role">${sessionScope.user.userType.userTypeName}</div>
                 </div>
                 <div class="dummy-logo">
                     ${sessionScope.user.firstName.charAt(0)}${sessionScope.user.lastName.charAt(0)}
@@ -311,6 +314,9 @@
             <div class="dropdown-menu" id="dropdownMenu">
                 <a href="${pageContext.request.contextPath}/admin/profile" class="dropdown-item">
                     <i class="fas fa-user"></i> My Profile
+                </a>
+                <a href="${pageContext.request.contextPath}/admin/settings" class="dropdown-item">
+                    <i class="fas fa-cog"></i> Settings
                 </a>
                 <a href="${pageContext.request.contextPath}/admin/mail" class="dropdown-item">
                     <i class="fas fa-envelope"></i> Messages
@@ -334,27 +340,27 @@
             </div>
             <div>
                 <div style="font-weight: 600;">${sessionScope.user.firstName} ${sessionScope.user.lastName}</div>
-                <div style="font-size: 12px; color: #667eea;">${sessionScope.user.role}</div>
+                <div style="font-size: 12px; color: #667eea;">${sessionScope.user.userType.userTypeName}</div>
             </div>
         </div>
 
         <div class="nav-item">
-            <a class="nav-link" href="${pageContext.request.contextPath}/admin-dashboard">
+            <a class="nav-link" href="${pageContext.request.contextPath}/admin/dashboard">
                 <i class="fas fa-home"></i> Dashboard
             </a>
         </div>
         <div class="nav-item">
-            <a class="nav-link" href="${pageContext.request.contextPath}/listProduct">
+            <a class="nav-link" href="${pageContext.request.contextPath}/admin/products">
                 <i class="fas fa-gavel"></i> Auctions
             </a>
         </div>
         <div class="nav-item">
-            <a class="nav-link" href="${pageContext.request.contextPath}/listCategory">
+            <a class="nav-link" href="${pageContext.request.contextPath}/admin/category/list">
                 <i class="fas fa-tags"></i> Categories
             </a>
         </div>
         <div class="nav-item">
-            <a class="nav-link" href="${pageContext.request.contextPath}/listUser">
+            <a class="nav-link" href="${pageContext.request.contextPath}/admin/users">
                 <i class="fas fa-users"></i> Users
             </a>
         </div>

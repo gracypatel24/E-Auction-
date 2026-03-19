@@ -1,25 +1,21 @@
 package com.grownited.eauction.controller.seller;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import com.grownited.eauction.entity.ProductEntity;
 import com.grownited.eauction.entity.UserEntity;
 import com.grownited.eauction.repository.ProductRepository;
+import com.grownited.eauction.repository.BidRepository;
 import com.grownited.eauction.repository.UserRepository;
-
+import com.grownited.eauction.repository.CategoryRepository;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/seller")
@@ -29,289 +25,332 @@ public class SellerController {
     private ProductRepository productRepository;
     
     @Autowired
+    private BidRepository bidRepository;
+    
+    @Autowired
     private UserRepository userRepository;
     
-    /**
-     * Check if user is seller
-     */
+    @Autowired
+    private CategoryRepository categoryRepository;
+    
+    // Seller authentication check
     private boolean isSeller(HttpSession session) {
         UserEntity user = (UserEntity) session.getAttribute("user");
-        return user != null && "SELLER".equals(user.getRole());
+        return user != null && "SELLER".equalsIgnoreCase(user.getUserType().getUserTypeName());
     }
     
     @GetMapping("/dashboard")
-    public String dashboard(Model model, HttpSession session) {
-        // Check if user is seller
+    public String dashboard(HttpSession session, Model model) {
         if (!isSeller(session)) {
             return "redirect:/login";
         }
         
         UserEntity user = (UserEntity) session.getAttribute("user");
         
-        // Get seller's products - using proper repository methods
-        List<ProductEntity> allListings = productRepository.findBySellerId(user.getUserId());
+        model.addAttribute("pageTitle", "Seller Dashboard");
+        model.addAttribute("page", "dashboard");
         
-        // Filter in Java instead of relying on repository methods that might not exist
-        List<ProductEntity> activeListings = allListings.stream()
-                .filter(p -> "ACTIVE".equals(p.getStatus()))
-                .toList();
+        Integer userId = user.getUserId();
         
-        List<ProductEntity> soldItems = allListings.stream()
-                .filter(p -> "SOLD".equals(p.getStatus()))
-                .toList();
-        
-        // Calculate stats
-        double totalRevenue = soldItems.stream()
-                .mapToDouble(ProductEntity::getCurrentBid)
-                .sum();
-        
-        int totalBids = allListings.stream()
-                .mapToInt(ProductEntity::getBidCount)
-                .sum();
-        
-        model.addAttribute("activeListings", activeListings);
-        model.addAttribute("soldItems", soldItems);
-        model.addAttribute("allListings", allListings);
-        model.addAttribute("totalRevenue", totalRevenue);
-        model.addAttribute("totalSold", soldItems.size());
-        model.addAttribute("totalActive", activeListings.size());
-        model.addAttribute("totalListings", allListings.size());
-        model.addAttribute("totalBids", totalBids);
-        
-        return "seller/dashboard";
-    }
-    
-    @GetMapping("/listings")
-    public String listings(Model model, HttpSession session) {
-        if (!isSeller(session)) {
-            return "redirect:/login";
+        // Add statistics with null checks
+        try {
+            model.addAttribute("totalProducts", productRepository.countBySellerId(userId));
+        } catch (Exception e) {
+            model.addAttribute("totalProducts", 0L);
         }
-        
-        UserEntity user = (UserEntity) session.getAttribute("user");
-        List<ProductEntity> listings = productRepository.findBySellerId(user.getUserId());
-        
-        model.addAttribute("listings", listings);
-        return "seller/listings";
-    }
-    
-    @GetMapping("/product/new")
-    public String newProduct(Model model, HttpSession session) {
-        if (!isSeller(session)) {
-            return "redirect:/login";
-        }
-        
-        // Add categories for dropdown
-        String[] categories = {"Electronics", "Fashion", "Vehicles", "Art", 
-                               "Jewelry", "Collectibles", "Real Estate", "Sports"};
-        model.addAttribute("categories", categories);
-        
-        return "seller/new-product";
-    }
-    
-    @PostMapping("/product/save")
-    public String saveProduct(
-            @RequestParam String title,
-            @RequestParam String description,
-            @RequestParam Double startingBid,
-            @RequestParam String category,
-            @RequestParam(required = false) LocalDate endDate,
-            @RequestParam(required = false) String imageUrl,
-            HttpSession session,
-            RedirectAttributes redirectAttributes) {
-        
-        if (!isSeller(session)) {
-            return "redirect:/login";
-        }
-        
-        UserEntity user = (UserEntity) session.getAttribute("user");
         
         try {
-            ProductEntity product = new ProductEntity();
-            product.setTitle(title);
-            product.setDescription(description);
-            product.setStartingBid(startingBid);
-            product.setCurrentBid(startingBid);
-            product.setCategory(category);
-            product.setSellerId(user.getUserId());
-            product.setStatus("ACTIVE");
+            model.addAttribute("activeAuctions", productRepository.countActiveBySellerId(userId));
+        } catch (Exception e) {
+            model.addAttribute("activeAuctions", 0L);
+        }
+        
+        try {
+            model.addAttribute("soldItems", productRepository.countSoldBySellerId(userId));
+        } catch (Exception e) {
+            model.addAttribute("soldItems", 0L);
+        }
+        
+        try {
+            model.addAttribute("totalEarnings", productRepository.totalEarningsBySellerId(userId));
+        } catch (Exception e) {
+            model.addAttribute("totalEarnings", 0.0);
+        }
+        
+        try {
+            model.addAttribute("recentActivities", bidRepository.findRecentBySellerId(userId));
+        } catch (Exception e) {
+            model.addAttribute("recentActivities", List.of());
+        }
+        
+        return "seller/SellerDashboard";
+    }
+    
+    // ========== MY PRODUCTS PAGE ==========
+    @GetMapping("/products")
+    public String products(HttpSession session, Model model) {
+        if (!isSeller(session)) {
+            return "redirect:/login";
+        }
+        
+        UserEntity user = (UserEntity) session.getAttribute("user");
+        
+        model.addAttribute("page", "products");
+        model.addAttribute("pageTitle", "My Products");
+        
+        Integer userId = user.getUserId();
+        List<ProductEntity> products = productRepository.findBySellerId(userId);
+        model.addAttribute("products", products);
+        
+        return "seller/MyProducts";
+    }
+    
+    // ========== ADD PRODUCT PAGE ==========
+    @GetMapping("/products/add")
+    public String addProductForm(HttpSession session, Model model) {
+        if (!isSeller(session)) {
+            return "redirect:/login";
+        }
+        
+        model.addAttribute("page", "products");
+        model.addAttribute("pageTitle", "Add New Product");
+        model.addAttribute("product", new ProductEntity());
+        model.addAttribute("categories", categoryRepository.findAll());
+        
+        return "seller/AddProduct";
+    }
+    
+    @PostMapping("/products/add")
+    public String addProduct(@ModelAttribute ProductEntity product,
+                             HttpSession session,
+                             RedirectAttributes redirectAttributes) {
+        if (!isSeller(session)) {
+            return "redirect:/login";
+        }
+        
+        try {
+            UserEntity seller = (UserEntity) session.getAttribute("user");
+            
+            product.setSeller(seller);
+            product.setSellerId(seller.getUserId());
             product.setCreatedAt(LocalDateTime.now());
-            
-            // Set end date (default 7 days from now if not provided)
-            if (endDate != null) {
-                product.setEndDate(endDate);
-            } else {
-                product.setEndDate(LocalDate.now().plusDays(7));
-            }
-            
-            // Set image URL or default
-            if (imageUrl != null && !imageUrl.isEmpty()) {
-                product.setImageUrl(imageUrl);
-            } else {
-                product.setImageUrl("https://via.placeholder.com/300x200/667eea/ffffff?text=" + 
-                                   title.substring(0, 1).toUpperCase());
-            }
-            
+            product.setUpdatedAt(LocalDateTime.now());
+            product.setCurrentBid(product.getStartingPrice());
             product.setBidCount(0);
-            product.setMinBidIncrement(10.0);
+            product.setViewCount(0);
+            product.setStatus("PENDING");
             
             productRepository.save(product);
             
-            redirectAttributes.addFlashAttribute("success", "Product listed successfully!");
-            
+            redirectAttributes.addFlashAttribute("successMessage", "Product added successfully! It will be reviewed by admin.");
         } catch (Exception e) {
             e.printStackTrace();
-            redirectAttributes.addFlashAttribute("error", "Failed to create product: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", "Error adding product: " + e.getMessage());
         }
         
-        return "redirect:/seller/listings";
+        return "redirect:/seller/products";
     }
     
-    @GetMapping("/product/edit")
-    public String editProduct(@RequestParam("id") Integer productId, 
-                              Model model, 
+    // ========== EDIT PRODUCT ==========
+    @GetMapping("/products/edit/{id}")
+    public String editProductForm(@PathVariable Integer id, HttpSession session, Model model) {
+        if (!isSeller(session)) {
+            return "redirect:/login";
+        }
+        
+        UserEntity seller = (UserEntity) session.getAttribute("user");
+        Optional<ProductEntity> productOpt = productRepository.findById(id);
+        
+        if (productOpt.isPresent() && productOpt.get().getSellerId().equals(seller.getUserId())) {
+            model.addAttribute("page", "products");
+            model.addAttribute("pageTitle", "Edit Product");
+            model.addAttribute("product", productOpt.get());
+            model.addAttribute("categories", categoryRepository.findAll());
+            return "seller/EditProduct";
+        }
+        
+        return "redirect:/seller/products";
+    }
+    
+    @PostMapping("/products/edit")
+    public String editProduct(@ModelAttribute ProductEntity product,
                               HttpSession session,
                               RedirectAttributes redirectAttributes) {
-        
         if (!isSeller(session)) {
             return "redirect:/login";
         }
-        
-        UserEntity user = (UserEntity) session.getAttribute("user");
-        
-        Optional<ProductEntity> product = productRepository.findById(productId);
-        
-        if (product.isPresent() && product.get().getSellerId().equals(user.getUserId())) {
-            String[] categories = {"Electronics", "Fashion", "Vehicles", "Art", 
-                                   "Jewelry", "Collectibles", "Real Estate", "Sports"};
-            model.addAttribute("categories", categories);
-            model.addAttribute("product", product.get());
-            return "seller/edit-product";
-        } else {
-            redirectAttributes.addFlashAttribute("error", "Product not found or you don't have permission!");
-            return "redirect:/seller/listings";
-        }
-    }
-    
-    @PostMapping("/product/update")
-    public String updateProduct(
-            @RequestParam Integer productId,
-            @RequestParam String title,
-            @RequestParam String description,
-            @RequestParam Double startingBid,
-            @RequestParam String category,
-            @RequestParam(required = false) LocalDate endDate,
-            @RequestParam(required = false) String imageUrl,
-            HttpSession session,
-            RedirectAttributes redirectAttributes) {
-        
-        if (!isSeller(session)) {
-            return "redirect:/login";
-        }
-        
-        UserEntity user = (UserEntity) session.getAttribute("user");
         
         try {
-            Optional<ProductEntity> optProduct = productRepository.findById(productId);
+            UserEntity seller = (UserEntity) session.getAttribute("user");
+            Optional<ProductEntity> existingProductOpt = productRepository.findById(product.getProductId());
             
-            if (optProduct.isPresent() && optProduct.get().getSellerId().equals(user.getUserId())) {
-                ProductEntity product = optProduct.get();
-                product.setTitle(title);
-                product.setDescription(description);
-                product.setStartingBid(startingBid);
-                product.setCategory(category);
+            if (existingProductOpt.isPresent() && existingProductOpt.get().getSellerId().equals(seller.getUserId())) {
+                ProductEntity existingProduct = existingProductOpt.get();
                 
-                if (endDate != null) {
-                    product.setEndDate(endDate);
+                // Only allow editing if product is pending or rejected
+                if ("PENDING".equals(existingProduct.getStatus()) || "REJECTED".equals(existingProduct.getStatus())) {
+                    existingProduct.setProductName(product.getProductName());
+                    existingProduct.setDescription(product.getDescription());
+                    existingProduct.setCategory(product.getCategory());
+                    existingProduct.setSubcategory(product.getSubcategory());
+                    existingProduct.setStartingPrice(product.getStartingPrice());
+                    existingProduct.setBuyNowPrice(product.getBuyNowPrice());
+                    existingProduct.setAuctionEndDate(product.getAuctionEndDate());
+                    existingProduct.setMainImage(product.getMainImage());
+                    existingProduct.setUpdatedAt(LocalDateTime.now());
+                    
+                    productRepository.save(existingProduct);
+                    redirectAttributes.addFlashAttribute("successMessage", "Product updated successfully!");
+                } else {
+                    redirectAttributes.addFlashAttribute("errorMessage", "Cannot edit product that is already " + existingProduct.getStatus());
                 }
-                
-                if (imageUrl != null && !imageUrl.isEmpty()) {
-                    product.setImageUrl(imageUrl);
-                }
-                
-                productRepository.save(product);
-                
-                redirectAttributes.addFlashAttribute("success", "Product updated successfully!");
-            } else {
-                redirectAttributes.addFlashAttribute("error", "Product not found!");
             }
-            
         } catch (Exception e) {
             e.printStackTrace();
-            redirectAttributes.addFlashAttribute("error", "Failed to update product!");
+            redirectAttributes.addFlashAttribute("errorMessage", "Error updating product: " + e.getMessage());
         }
         
-        return "redirect:/seller/listings";
+        return "redirect:/seller/products";
     }
     
-    @GetMapping("/product/delete")
-    public String deleteProduct(@RequestParam("id") Integer productId,
+    // ========== ACTIVE AUCTIONS PAGE ==========
+    @GetMapping("/active-auctions")
+    public String activeAuctions(HttpSession session, Model model) {
+        if (!isSeller(session)) {
+            return "redirect:/login";
+        }
+        
+        UserEntity user = (UserEntity) session.getAttribute("user");
+        
+        model.addAttribute("page", "active");
+        model.addAttribute("pageTitle", "Active Auctions");
+        
+        Integer userId = user.getUserId();
+        List<ProductEntity> products = productRepository.findActiveBySellerId(userId);
+        model.addAttribute("products", products);
+        
+        return "seller/ActiveAuctions";
+    }
+    
+    // ========== SOLD ITEMS PAGE ==========
+    @GetMapping("/sold-items")
+    public String soldItems(HttpSession session, Model model) {
+        if (!isSeller(session)) {
+            return "redirect:/login";
+        }
+        
+        UserEntity user = (UserEntity) session.getAttribute("user");
+        
+        model.addAttribute("page", "sold");
+        model.addAttribute("pageTitle", "Sold Items");
+        
+        Integer userId = user.getUserId();
+        List<ProductEntity> products = productRepository.findSoldBySellerId(userId);
+        model.addAttribute("products", products);
+        
+        return "seller/SoldItems";
+    }
+    
+    // ========== BIDS RECEIVED PAGE ==========
+    @GetMapping("/bids-received")
+    public String bidsReceived(HttpSession session, Model model) {
+        if (!isSeller(session)) {
+            return "redirect:/login";
+        }
+        
+        UserEntity user = (UserEntity) session.getAttribute("user");
+        
+        model.addAttribute("page", "bids");
+        model.addAttribute("pageTitle", "Bids Received");
+        
+        Integer userId = user.getUserId();
+        
+        try {
+            model.addAttribute("bids", bidRepository.findBySellerId(userId));
+        } catch (Exception e) {
+            model.addAttribute("bids", List.of());
+        }
+        
+        return "seller/BidsReceived";
+    }
+    
+    // ========== EARNINGS PAGE ==========
+    @GetMapping("/earnings")
+    public String earnings(HttpSession session, Model model) {
+        if (!isSeller(session)) {
+            return "redirect:/login";
+        }
+        
+        UserEntity user = (UserEntity) session.getAttribute("user");
+        
+        model.addAttribute("page", "earnings");
+        model.addAttribute("pageTitle", "Earnings");
+        
+        Integer userId = user.getUserId();
+        
+        try {
+            model.addAttribute("earnings", productRepository.earningsBreakdownBySellerId(userId));
+        } catch (Exception e) {
+            model.addAttribute("earnings", List.of());
+        }
+        
+        try {
+            model.addAttribute("totalEarnings", productRepository.totalEarningsBySellerId(userId));
+        } catch (Exception e) {
+            model.addAttribute("totalEarnings", 0.0);
+        }
+        
+        return "seller/Earnings";
+    }
+    
+    // ========== PROFILE PAGE ==========
+    @GetMapping("/profile")
+    public String profile(HttpSession session, Model model) {
+        if (!isSeller(session)) {
+            return "redirect:/login";
+        }
+        
+        UserEntity user = (UserEntity) session.getAttribute("user");
+        
+        model.addAttribute("page", "profile");
+        model.addAttribute("pageTitle", "My Profile");
+        
+        Optional<UserEntity> userOpt = userRepository.findById(user.getUserId());
+        userOpt.ifPresent(value -> model.addAttribute("user", value));
+        
+        return "seller/Profile";
+    }
+    
+    @PostMapping("/profile/update")
+    public String updateProfile(@RequestParam String firstName,
+                                @RequestParam String lastName,
+                                @RequestParam String phone,
                                 HttpSession session,
                                 RedirectAttributes redirectAttributes) {
-        
         if (!isSeller(session)) {
             return "redirect:/login";
         }
-        
-        UserEntity user = (UserEntity) session.getAttribute("user");
         
         try {
-            Optional<ProductEntity> product = productRepository.findById(productId);
+            UserEntity sessionUser = (UserEntity) session.getAttribute("user");
+            Optional<UserEntity> userOpt = userRepository.findById(sessionUser.getUserId());
             
-            if (product.isPresent() && product.get().getSellerId().equals(user.getUserId())) {
-                productRepository.deleteById(productId);
-                redirectAttributes.addFlashAttribute("success", "Product deleted successfully!");
-            } else {
-                redirectAttributes.addFlashAttribute("error", "Product not found or you don't have permission!");
+            if (userOpt.isPresent()) {
+                UserEntity user = userOpt.get();
+                user.setFirstName(firstName);
+                user.setLastName(lastName);
+                user.setPhone(phone);
+                user.setUpdatedAt(LocalDateTime.now());
+                
+                userRepository.save(user);
+                session.setAttribute("user", user);
+                redirectAttributes.addFlashAttribute("successMessage", "Profile updated successfully!");
             }
-            
         } catch (Exception e) {
             e.printStackTrace();
-            redirectAttributes.addFlashAttribute("error", "Failed to delete product: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", "Error updating profile: " + e.getMessage());
         }
         
-        return "redirect:/seller/listings";
-    }
-    
-    @GetMapping("/sales")
-    public String sales(Model model, HttpSession session) {
-        if (!isSeller(session)) {
-            return "redirect:/login";
-        }
-        
-        UserEntity user = (UserEntity) session.getAttribute("user");
-        List<ProductEntity> allListings = productRepository.findBySellerId(user.getUserId());
-        
-        List<ProductEntity> soldItems = allListings.stream()
-                .filter(p -> "SOLD".equals(p.getStatus()))
-                .toList();
-        
-        double totalRevenue = soldItems.stream()
-                .mapToDouble(ProductEntity::getCurrentBid)
-                .sum();
-        
-        model.addAttribute("soldItems", soldItems);
-        model.addAttribute("totalRevenue", totalRevenue);
-        model.addAttribute("totalSold", soldItems.size());
-        
-        return "seller/sales";
-    }
-    
-    @GetMapping("/product/view")
-    public String viewProduct(@RequestParam("id") Integer productId,
-                              Model model,
-                              HttpSession session) {
-        
-        if (!isSeller(session)) {
-            return "redirect:/login";
-        }
-        
-        Optional<ProductEntity> product = productRepository.findById(productId);
-        
-        if (product.isPresent()) {
-            model.addAttribute("product", product.get());
-            return "seller/view-product";
-        }
-        
-        return "redirect:/seller/listings";
+        return "redirect:/seller/profile";
     }
 }

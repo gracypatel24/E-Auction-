@@ -1,7 +1,7 @@
 package com.grownited.eauction.entity;
 
-import javax.persistence.*;
-import java.util.Date;
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "categories")
@@ -12,46 +12,115 @@ public class CategoryEntity {
     @Column(name = "category_id")
     private Integer categoryId;
     
-    @Column(name = "category_name", unique = true, nullable = false, length = 100)
+    @Column(name = "category_name", nullable = false)
     private String categoryName;
     
-    @Column(name = "description", columnDefinition = "TEXT")
+    @Column(name = "description", length = 500)
     private String description;
     
-    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "parent_category_id")
+    private Integer parentCategoryId;  // This is the field name
+    
+    @Column(name = "image")
+    private String image;
+    
+    @Column(name = "display_order")
+    private Integer displayOrder;
+    
+    @Column(name = "is_active")
+    private Boolean isActive;
+    
     @Column(name = "created_at")
-    private Date createdAt;
+    private LocalDateTime createdAt;
     
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updated_at")
-    private Date updatedAt;
+    private LocalDateTime updatedAt;
     
-    @PrePersist
-    protected void onCreate() {
-        createdAt = new Date();
-        updatedAt = new Date();
+    // Constructors
+    public CategoryEntity() {
+        this.isActive = true;
+        this.displayOrder = 0;
     }
-    
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = new Date();
-    }
-    
-    public CategoryEntity() {}
     
     // Getters and Setters
-    public Integer getCategoryId() { return categoryId; }
-    public void setCategoryId(Integer categoryId) { this.categoryId = categoryId; }
+    public Integer getCategoryId() {
+        return categoryId;
+    }
     
-    public String getCategoryName() { return categoryName; }
-    public void setCategoryName(String categoryName) { this.categoryName = categoryName; }
+    public void setCategoryId(Integer categoryId) {
+        this.categoryId = categoryId;
+    }
     
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public String getCategoryName() {
+        return categoryName;
+    }
     
-    public Date getCreatedAt() { return createdAt; }
-    public void setCreatedAt(Date createdAt) { this.createdAt = createdAt; }
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
     
-    public Date getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(Date updatedAt) { this.updatedAt = updatedAt; }
+    public String getDescription() {
+        return description;
+    }
+    
+    public void setDescription(String description) {
+        this.description = description;
+    }
+    
+    public Integer getParentCategoryId() {
+        return parentCategoryId;
+    }
+    
+    public void setParentCategoryId(Integer parentCategoryId) {
+        this.parentCategoryId = parentCategoryId;
+    }
+    
+    public String getImage() {
+        return image;
+    }
+    
+    public void setImage(String image) {
+        this.image = image;
+    }
+    
+    public Integer getDisplayOrder() {
+        return displayOrder;
+    }
+    
+    public void setDisplayOrder(Integer displayOrder) {
+        this.displayOrder = displayOrder;
+    }
+    
+    public Boolean getIsActive() {
+        return isActive;
+    }
+    
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
+    }
+    
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+    
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+    
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+    
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+    
+    @Override
+    public String toString() {
+        return "CategoryEntity{" +
+                "categoryId=" + categoryId +
+                ", categoryName='" + categoryName + '\'' +
+                ", isActive=" + isActive +
+                '}';
+    }
 }

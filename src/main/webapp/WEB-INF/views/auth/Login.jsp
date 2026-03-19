@@ -1,135 +1,176 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - E-Auction</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
         body {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        .login-card {
+        
+        .container {
             background: white;
             border-radius: 10px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
             width: 400px;
-            max-width: 90%;
             padding: 40px;
         }
-        .login-header {
+        
+        h2 {
             text-align: center;
-            margin-bottom: 30px;
-        }
-        .login-header h2 {
             color: #333;
-            font-weight: 600;
-            margin-bottom: 10px;
+            margin-bottom: 30px;
+            font-size: 28px;
         }
-        .login-header p {
-            color: #666;
-        }
+        
         .form-group {
             margin-bottom: 20px;
         }
-        .form-control {
-            height: 45px;
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 500;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px;
             border: 2px solid #e0e0e0;
             border-radius: 5px;
-            padding: 0 15px;
-            width: 100%;
-            font-size: 14px;
-            transition: all 0.3s;
+            font-size: 16px;
+            transition: border-color 0.3s;
         }
-        .form-control:focus {
-            border-color: #667eea;
+        
+        input:focus {
             outline: none;
-            box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+            border-color: #667eea;
         }
-        .btn-login {
+        
+        button {
+            width: 100%;
+            padding: 14px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            height: 45px;
-            width: 100%;
             border-radius: 5px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: transform 0.2s;
         }
-        .btn-login:hover {
+        
+        button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(102,126,234,0.4);
         }
-        .alert {
-            padding: 12px 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
-        .alert-danger {
+        
+        .error {
             background: #fee;
             color: #c33;
-            border: 1px solid #fcc;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
         }
-        .alert-success {
-            background: #efe;
-            color: #3c3;
-            border: 1px solid #cfc;
+        
+        .success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
         }
-        .login-footer {
+        
+        .links {
             text-align: center;
             margin-top: 20px;
         }
-        .login-footer a {
+        
+        .links a {
             color: #667eea;
             text-decoration: none;
-            font-weight: 500;
+            margin: 0 10px;
         }
-        .login-footer a:hover {
+        
+        .links a:hover {
             text-decoration: underline;
         }
-        .login-footer p {
-            margin: 10px 0;
+        
+        .divider {
+            margin: 20px 0;
+            text-align: center;
+            position: relative;
+        }
+        
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #e0e0e0;
+            z-index: 1;
+        }
+        
+        .divider span {
+            background: white;
+            padding: 0 10px;
+            position: relative;
+            z-index: 2;
+            color: #777;
         }
     </style>
 </head>
 <body>
-    <div class="login-card">
-        <div class="login-header">
-            <h2>🔐 E-Auction</h2>
-            <p>Welcome back! Please login to continue</p>
-        </div>
-		
+    <div class="container">
+        <h2>Welcome Back</h2>
         
         <c:if test="${not empty error}">
-            <div class="alert alert-danger">${error}</div>
-        </c:if>
-        <c:if test="${not empty message}">
-            <div class="alert alert-success">${message}</div>
+            <div class="error">${error}</div>
         </c:if>
         
-        <form action="${pageContext.request.contextPath}/login" method="post">
+        <c:if test="${not empty message}">
+            <div class="success">${message}</div>
+        </c:if>
+        
+        <form action="${pageContext.request.contextPath}/authenticate" method="post">
             <div class="form-group">
-                <input type="email" name="username" class="form-control" 
-                       placeholder="Email Address" required>
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" required>
             </div>
+            
             <div class="form-group">
-                <input type="password" name="password" class="form-control" 
-                       placeholder="Password" required>
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
             </div>
-            <button type="submit" class="btn-login">Login</button>
+            
+            <button type="submit">Login</button>
         </form>
         
-        <div class="login-footer">
-            <p>Don't have an account? <a href="${pageContext.request.contextPath}/auth/signup">Sign up</a></p>
-            <p><a href="${pageContext.request.contextPath}/auth/forgot-password">Forgot Password?</a></p>
+        <div class="divider">
+            <span>or</span>
+        </div>
+        
+        <div class="links">
+            <a href="${pageContext.request.contextPath}/forgot-password">Forgot Password?</a>
+            <a href="${pageContext.request.contextPath}/signup">Create Account</a>
         </div>
     </div>
 </body>

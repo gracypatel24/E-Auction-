@@ -301,16 +301,16 @@
     <div class="header-right">
         <!-- Navigation Links -->
         <div class="nav-links">
-            <a href="${pageContext.request.contextPath}/admin-dashboard" class="nav-link-item">
+            <a href="${pageContext.request.contextPath}/admin/dashboard" class="nav-link-item">
                 <i class="fas fa-home"></i> Dashboard
             </a>
-            <a href="${pageContext.request.contextPath}/listProduct" class="nav-link-item">
+            <a href="${pageContext.request.contextPath}/admin/products" class="nav-link-item">
                 <i class="fas fa-gavel"></i> Auctions
             </a>
-            <a href="${pageContext.request.contextPath}/listCategory" class="nav-link-item">
+            <a href="${pageContext.request.contextPath}/admin/category/list" class="nav-link-item">
                 <i class="fas fa-tags"></i> Categories
             </a>
-            <a href="${pageContext.request.contextPath}/listUser" class="nav-link-item">
+            <a href="${pageContext.request.contextPath}/admin/users" class="nav-link-item">
                 <i class="fas fa-users"></i> Users
             </a>
         </div>
@@ -326,7 +326,7 @@
             <div class="user-profile" onclick="toggleDropdown()">
                 <div class="user-info">
                     <div class="name">${sessionScope.user.firstName} ${sessionScope.user.lastName}</div>
-                    <div class="role">${sessionScope.user.role}</div>
+                    <div class="role">${sessionScope.user.userType.userTypeName}</div>
                 </div>
                 <c:choose>
                     <c:when test="${not empty sessionScope.user.profilePicURL}">
@@ -377,32 +377,32 @@
             </c:choose>
             <div>
                 <div style="font-weight: 600;">${sessionScope.user.firstName} ${sessionScope.user.lastName}</div>
-                <div style="font-size: 12px; color: #667eea;">${sessionScope.user.role}</div>
+                <div style="font-size: 12px; color: #667eea;">${sessionScope.user.userType.userTypeName}</div>
             </div>
         </div>
 
         <div class="nav-item">
-            <a class="nav-link" href="${pageContext.request.contextPath}/admin-dashboard">
+            <a class="nav-link" href="${pageContext.request.contextPath}/admin/dashboard">
                 <i class="fas fa-home"></i> Dashboard
             </a>
         </div>
         <div class="nav-item">
-            <a class="nav-link" href="${pageContext.request.contextPath}/listProduct">
+            <a class="nav-link" href="${pageContext.request.contextPath}/admin/products">
                 <i class="fas fa-gavel"></i> Auctions
             </a>
         </div>
         <div class="nav-item">
-            <a class="nav-link" href="${pageContext.request.contextPath}/listCategory">
+            <a class="nav-link" href="${pageContext.request.contextPath}/admin/category/list">
                 <i class="fas fa-tags"></i> Categories
             </a>
         </div>
         <div class="nav-item">
-            <a class="nav-link" href="${pageContext.request.contextPath}/listUser">
+            <a class="nav-link" href="${pageContext.request.contextPath}/admin/users">
                 <i class="fas fa-users"></i> Users
             </a>
         </div>
         <div class="nav-item">
-            <a class="nav-link" href="${pageContext.request.contextPath}/newUserType">
+            <a class="nav-link" href="${pageContext.request.contextPath}/admin/user-type/new">
                 <i class="fas fa-user-tag"></i> User Types
             </a>
         </div>
@@ -435,7 +435,7 @@
                 </c:otherwise>
             </c:choose>
             <h2>${sessionScope.user.firstName} ${sessionScope.user.lastName}</h2>
-            <div class="role">${sessionScope.user.role}</div>
+            <div class="role">${sessionScope.user.userType.userTypeName}</div>
         </div>
         
         <div class="info-row">
@@ -467,7 +467,7 @@
             <div class="info-label">Account Status</div>
             <div class="info-value">
                 <c:choose>
-                    <c:when test="${sessionScope.user.active}">
+                    <c:when test="${sessionScope.user.isActive}">
                         <span style="color: #28a745;">Active</span>
                     </c:when>
                     <c:otherwise>

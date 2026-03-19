@@ -9,16 +9,17 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @EnableScheduling
 public class EauctionApplication extends SpringBootServletInitializer {
-
+    
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
         return application.sources(EauctionApplication.class);
     }
-
+    
     public static void main(String[] args) {
         SpringApplication.run(EauctionApplication.class, args);
-        System.out.println("\n✅ E-Auction System Started Successfully!");
-        System.out.println("📌 Access the application at: http://localhost:8080/");
-        System.out.println("📌 Login with admin@eauction.com / admin123 (after creating admin)");
+        System.out.println("=====================================");
+        System.out.println("✅ E-AUCTION WEBSITE STARTED");
+        System.out.println("🌐 http://localhost:9999");
+        System.out.println("=====================================");
     }
 }

@@ -1,127 +1,200 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up - E-Auction</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
         body {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             padding: 20px;
         }
-        .signup-card {
+        
+        .container {
             background: white;
             border-radius: 10px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
             width: 450px;
-            max-width: 100%;
             padding: 40px;
         }
-        .signup-header {
+        
+        h2 {
             text-align: center;
-            margin-bottom: 30px;
-        }
-        .signup-header h2 {
             color: #333;
-            font-weight: 600;
-            margin-bottom: 10px;
+            margin-bottom: 30px;
+            font-size: 28px;
         }
-        .signup-header p {
-            color: #666;
-        }
+        
         .form-group {
             margin-bottom: 20px;
         }
-        .form-control {
-            height: 45px;
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 500;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
             border: 2px solid #e0e0e0;
             border-radius: 5px;
-            padding: 0 15px;
-            width: 100%;
-            font-size: 14px;
-            transition: all 0.3s;
+            font-size: 16px;
+            transition: border-color 0.3s;
         }
-        .form-control:focus {
-            border-color: #667eea;
+        
+        input:focus, select:focus {
             outline: none;
-            box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+            border-color: #667eea;
         }
-        .btn-signup {
+        
+        .name-row {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .name-row .form-group {
+            flex: 1;
+        }
+        
+        button {
+            width: 100%;
+            padding: 14px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            height: 45px;
-            width: 100%;
             border-radius: 5px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: transform 0.2s;
+            margin-top: 10px;
         }
-        .btn-signup:hover {
+        
+        button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(102,126,234,0.4);
         }
-        .alert {
-            padding: 12px 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
+        
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
         }
-        .alert-danger {
+        
+        .error {
             background: #fee;
             color: #c33;
-            border: 1px solid #fcc;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
         }
-        .login-footer {
+        
+        .success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .login-link {
             text-align: center;
             margin-top: 20px;
+            color: #666;
         }
-        .login-footer a {
+        
+        .login-link a {
             color: #667eea;
             text-decoration: none;
             font-weight: 500;
         }
-        .login-footer a:hover {
+        
+        .login-link a:hover {
             text-decoration: underline;
+        }
+        
+        .password-requirements {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
         }
     </style>
 </head>
 <body>
-    <div class="signup-card">
-        <div class="signup-header">
-            <h2>📝 Create Account</h2>
-            <p>Join E-Auction today and start bidding</p>
-        </div>
+    <div class="container">
+        <h2>Create Account</h2>
         
         <c:if test="${not empty error}">
-            <div class="alert alert-danger">${error}</div>
+            <div class="error">${error}</div>
         </c:if>
         
-        <form action="${pageContext.request.contextPath}/auth/register" method="post">
-            <div class="form-group">
-                <input type="email" name="email" class="form-control" 
-                       placeholder="Email Address" required>
+        <form action="${pageContext.request.contextPath}/register" method="post">
+            <div class="name-row">
+                <div class="form-group">
+                    <label for="firstName">First Name</label>
+                    <input type="text" id="firstName" name="firstName" placeholder="John" required 
+                           value="${param.firstName != null ? param.firstName : ''}">
+                </div>
+                
+                <div class="form-group">
+                    <label for="lastName">Last Name</label>
+                    <input type="text" id="lastName" name="lastName" placeholder="Doe" required
+                           value="${param.lastName != null ? param.lastName : ''}">
+                </div>
             </div>
+            
             <div class="form-group">
-                <input type="password" name="password" class="form-control" 
-                       placeholder="Password" required>
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="john@example.com" required
+                       value="${param.email != null ? param.email : ''}">
             </div>
+            
             <div class="form-group">
-                <input type="password" name="confirmPassword" class="form-control" 
-                       placeholder="Confirm Password" required>
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Create a password" required>
+                <div class="password-requirements">Minimum 8 characters</div>
             </div>
-            <button type="submit" class="btn-signup">Create Account</button>
+            
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="userTypeId">I want to register as</label>
+                <select id="userTypeId" name="userTypeId" required>
+                    <option value="">Select User Type</option>
+                    <c:forEach items="${allUserType}" var="type">
+                        <option value="${type.userTypeId}" 
+                                ${param.userTypeId == type.userTypeId ? 'selected' : ''}>
+                            ${type.userTypeName} - ${type.description}
+                        </option>
+                    </c:forEach>
+                </select>
+            </div>
+            
+            <button type="submit" ${empty allUserType ? 'disabled' : ''}>Sign Up</button>
         </form>
         
-        <div class="login-footer">
-            <p>Already have an account? <a href="${pageContext.request.contextPath}/auth/login">Login</a></p>
+        <div class="login-link">
+            Already have an account? <a href="${pageContext.request.contextPath}/login">Login here</a>
         </div>
     </div>
 </body>

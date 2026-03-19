@@ -1,7 +1,7 @@
 package com.grownited.eauction.entity;
 
-import javax.persistence.*;
-import java.util.Date;
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "user_details")
@@ -12,54 +12,37 @@ public class UserDetailEntity {
     @Column(name = "user_detail_id")
     private Integer userDetailId;
     
-    @Column(name = "first_name", length = 50)
+    @Column(name = "first_name")
     private String firstName;
     
-    @Column(name = "last_name", length = 50)
+    @Column(name = "last_name")
     private String lastName;
     
-    @Column(name = "phone", length = 20)
+    private String email;
+    
     private String phone;
     
-    @Column(name = "address", columnDefinition = "TEXT")
+    @Column(length = 500)
     private String address;
     
-    @Column(name = "city", length = 50)
     private String city;
     
-    @Column(name = "state", length = 50)
     private String state;
     
-    @Column(name = "pincode", length = 10)
     private String pincode;
     
-    @Column(name = "profile_image", length = 500)
+    @Column(name = "profile_image")
     private String profileImage;
     
     @OneToOne
     @JoinColumn(name = "user_id", unique = true)
     private UserEntity user;
     
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at")
-    private Date createdAt;
+    private LocalDateTime createdAt;
     
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updated_at")
-    private Date updatedAt;
-    
-    @PrePersist
-    protected void onCreate() {
-        createdAt = new Date();
-        updatedAt = new Date();
-    }
-    
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = new Date();
-    }
-    
-    public UserDetailEntity() {}
+    private LocalDateTime updatedAt;
     
     // Getters and Setters
     public Integer getUserDetailId() { return userDetailId; }
@@ -70,6 +53,11 @@ public class UserDetailEntity {
     
     public String getLastName() { return lastName; }
     public void setLastName(String lastName) { this.lastName = lastName; }
+    
+    public String getFullName() { return firstName + " " + lastName; }
+    
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
     
     public String getPhone() { return phone; }
     public void setPhone(String phone) { this.phone = phone; }
@@ -92,9 +80,9 @@ public class UserDetailEntity {
     public UserEntity getUser() { return user; }
     public void setUser(UserEntity user) { this.user = user; }
     
-    public Date getCreatedAt() { return createdAt; }
-    public void setCreatedAt(Date createdAt) { this.createdAt = createdAt; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
     
-    public Date getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(Date updatedAt) { this.updatedAt = updatedAt; }
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
 }

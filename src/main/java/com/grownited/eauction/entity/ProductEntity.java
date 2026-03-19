@@ -1,8 +1,7 @@
 package com.grownited.eauction.entity;
 
-import javax.persistence.*;
-import java.math.BigDecimal;
-import java.util.Date;
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "products")
@@ -13,101 +12,265 @@ public class ProductEntity {
     @Column(name = "product_id")
     private Integer productId;
     
-    @Column(name = "title", nullable = false, length = 200)
-    private String title;
+    @Column(name = "product_name", nullable = false)
+    private String productName;
     
-    @Column(name = "description", columnDefinition = "TEXT")
+    @Column(name = "description", length = 2000)
     private String description;
     
-    @Column(name = "starting_price", precision = 10, scale = 2, nullable = false)
-    private BigDecimal startingPrice;
+    @Column(name = "category")
+    private String category;
     
-    @Column(name = "current_price", precision = 10, scale = 2)
-    private BigDecimal currentPrice;
+    @Column(name = "subcategory")
+    private String subcategory;
     
-    @Column(name = "image_url", length = 500)
-    private String imageUrl;
+    @Column(name = "starting_price", nullable = false)
+    private Double startingPrice;
     
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "auction_start_date")
-    private Date auctionStartDate;
+    @Column(name = "current_bid")
+    private Double currentBid;
     
-    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "buy_now_price")
+    private Double buyNowPrice;
+    
+    @Column(name = "bid_count")
+    private Integer bidCount;
+    
+    @Column(name = "view_count")
+    private Integer viewCount;
+    
+    @Column(name = "main_image")
+    private String mainImage;
+    
+    @Column(name = "image1")
+    private String image1;
+    
+    @Column(name = "image2")
+    private String image2;
+    
+    @Column(name = "image3")
+    private String image3;
+    
+    @Column(name = "status")
+    private String status;
+    
     @Column(name = "auction_end_date")
-    private Date auctionEndDate;
-    
-    @Column(name = "status", length = 20)
-    private String status = "ACTIVE";
-    
-    @ManyToOne
-    @JoinColumn(name = "category_id")
-    private CategoryEntity category;
+    private LocalDateTime auctionEndDate;
     
     @ManyToOne
     @JoinColumn(name = "seller_id", nullable = false)
     private UserEntity seller;
     
-    @Temporal(TemporalType.TIMESTAMP)
+    // This field maps to the same column, so we need insertable=false, updatable=false
+    @Column(name = "seller_id", insertable = false, updatable = false)
+    private Integer sellerId;
+    
+    @Column(name = "winning_bid_id")
+    private Integer winningBidId;
+    
+    @Column(name = "winning_user_id")
+    private Integer winningUserId;
+    
+    @Column(name = "winning_amount")
+    private Double winningAmount;
+    
     @Column(name = "created_at")
-    private Date createdAt;
+    private LocalDateTime createdAt;
     
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updated_at")
-    private Date updatedAt;
+    private LocalDateTime updatedAt;
     
-    @PrePersist
-    protected void onCreate() {
-        createdAt = new Date();
-        updatedAt = new Date();
-        if (currentPrice == null) {
-            currentPrice = startingPrice;
+    // Constructors
+    public ProductEntity() {
+        this.bidCount = 0;
+        this.viewCount = 0;
+    }
+    
+    // Getters and Setters
+    public Integer getProductId() {
+        return productId;
+    }
+    
+    public void setProductId(Integer productId) {
+        this.productId = productId;
+    }
+    
+    public String getProductName() {
+        return productName;
+    }
+    
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+    
+    public String getDescription() {
+        return description;
+    }
+    
+    public void setDescription(String description) {
+        this.description = description;
+    }
+    
+    public String getCategory() {
+        return category;
+    }
+    
+    public void setCategory(String category) {
+        this.category = category;
+    }
+    
+    public String getSubcategory() {
+        return subcategory;
+    }
+    
+    public void setSubcategory(String subcategory) {
+        this.subcategory = subcategory;
+    }
+    
+    public Double getStartingPrice() {
+        return startingPrice;
+    }
+    
+    public void setStartingPrice(Double startingPrice) {
+        this.startingPrice = startingPrice;
+    }
+    
+    public Double getCurrentBid() {
+        return currentBid;
+    }
+    
+    public void setCurrentBid(Double currentBid) {
+        this.currentBid = currentBid;
+    }
+    
+    public Double getBuyNowPrice() {
+        return buyNowPrice;
+    }
+    
+    public void setBuyNowPrice(Double buyNowPrice) {
+        this.buyNowPrice = buyNowPrice;
+    }
+    
+    public Integer getBidCount() {
+        return bidCount;
+    }
+    
+    public void setBidCount(Integer bidCount) {
+        this.bidCount = bidCount;
+    }
+    
+    public Integer getViewCount() {
+        return viewCount;
+    }
+    
+    public void setViewCount(Integer viewCount) {
+        this.viewCount = viewCount;
+    }
+    
+    public String getMainImage() {
+        return mainImage;
+    }
+    
+    public void setMainImage(String mainImage) {
+        this.mainImage = mainImage;
+    }
+    
+    public String getImage1() {
+        return image1;
+    }
+    
+    public void setImage1(String image1) {
+        this.image1 = image1;
+    }
+    
+    public String getImage2() {
+        return image2;
+    }
+    
+    public void setImage2(String image2) {
+        this.image2 = image2;
+    }
+    
+    public String getImage3() {
+        return image3;
+    }
+    
+    public void setImage3(String image3) {
+        this.image3 = image3;
+    }
+    
+    public String getStatus() {
+        return status;
+    }
+    
+    public void setStatus(String status) {
+        this.status = status;
+    }
+    
+    public LocalDateTime getAuctionEndDate() {
+        return auctionEndDate;
+    }
+    
+    public void setAuctionEndDate(LocalDateTime auctionEndDate) {
+        this.auctionEndDate = auctionEndDate;
+    }
+    
+    public UserEntity getSeller() {
+        return seller;
+    }
+    
+    public void setSeller(UserEntity seller) {
+        this.seller = seller;
+        if (seller != null) {
+            this.sellerId = seller.getUserId();
         }
     }
     
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = new Date();
+    public Integer getSellerId() {
+        return sellerId;
     }
     
-    public ProductEntity() {}
+    public void setSellerId(Integer sellerId) {
+        this.sellerId = sellerId;
+    }
     
-    // Getters and Setters
-    public Integer getProductId() { return productId; }
-    public void setProductId(Integer productId) { this.productId = productId; }
+    public Integer getWinningBidId() {
+        return winningBidId;
+    }
     
-    public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
+    public void setWinningBidId(Integer winningBidId) {
+        this.winningBidId = winningBidId;
+    }
     
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public Integer getWinningUserId() {
+        return winningUserId;
+    }
     
-    public BigDecimal getStartingPrice() { return startingPrice; }
-    public void setStartingPrice(BigDecimal startingPrice) { this.startingPrice = startingPrice; }
+    public void setWinningUserId(Integer winningUserId) {
+        this.winningUserId = winningUserId;
+    }
     
-    public BigDecimal getCurrentPrice() { return currentPrice; }
-    public void setCurrentPrice(BigDecimal currentPrice) { this.currentPrice = currentPrice; }
+    public Double getWinningAmount() {
+        return winningAmount;
+    }
     
-    public String getImageUrl() { return imageUrl; }
-    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+    public void setWinningAmount(Double winningAmount) {
+        this.winningAmount = winningAmount;
+    }
     
-    public Date getAuctionStartDate() { return auctionStartDate; }
-    public void setAuctionStartDate(Date auctionStartDate) { this.auctionStartDate = auctionStartDate; }
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
     
-    public Date getAuctionEndDate() { return auctionEndDate; }
-    public void setAuctionEndDate(Date auctionEndDate) { this.auctionEndDate = auctionEndDate; }
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
     
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
     
-    public CategoryEntity getCategory() { return category; }
-    public void setCategory(CategoryEntity category) { this.category = category; }
-    
-    public UserEntity getSeller() { return seller; }
-    public void setSeller(UserEntity seller) { this.seller = seller; }
-    
-    public Date getCreatedAt() { return createdAt; }
-    public void setCreatedAt(Date createdAt) { this.createdAt = createdAt; }
-    
-    public Date getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(Date updatedAt) { this.updatedAt = updatedAt; }
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 }

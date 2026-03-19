@@ -1,12 +1,28 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+</div> <!-- Close content-area -->
+        
+        <!-- Footer -->
+        <div class="footer">
+            &copy; 2026 E-Auction. All rights reserved. | Admin Panel v1.0
+        </div>
+    </div> <!-- Close main-content -->
 
-<footer class="footer">
-  <div class="d-sm-flex justify-content-center justify-content-sm-between">
-    <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">
-      Copyright © 2024 <span class="text-primary font-weight-bold">E-Auction</span>. All rights reserved.
-    </span>
-    <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">
-      Powered by <i class="ti-heart text-danger ml-1"></i> Skydash Theme
-    </span>
-  </div>
-</footer>
+    <script>
+        function toggleDropdown() {
+            document.getElementById('dropdownMenu').classList.toggle('show');
+        }
+        
+        // Close dropdown when clicking outside
+        window.onclick = function(event) {
+            if (!event.target.matches('.user-profile') && !event.target.matches('.user-profile *')) {
+                var dropdowns = document.getElementsByClassName('dropdown-menu');
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>

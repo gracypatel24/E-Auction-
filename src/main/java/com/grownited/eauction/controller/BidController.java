@@ -1,47 +1,39 @@
 package com.grownited.eauction.controller;
 
-import com.grownited.eauction.entity.*;
-import com.grownited.eauction.repository.*;
+import com.grownited.eauction.entity.UserEntity;
 import com.grownited.eauction.services.AuctionService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import java.math.BigDecimal;
 
 @Controller
 @RequestMapping("/bid")
 public class BidController {
     
     @Autowired
-    private ProductRepository productRepository;
-    
-    @Autowired
-    private UserRepository userRepository;
-    
-    @Autowired
     private AuctionService auctionService;
     
-    @PostMapping("/place")
-    public String placeBid(@RequestParam Integer productId,
-                           @RequestParam BigDecimal bidAmount,
-                           RedirectAttributes ra) {
+    @PostMapping("/place/{productId}")
+    public String placeBid(@PathVariable Integer productId,
+                          @RequestParam Double amount,
+                          HttpSession session,
+                          RedirectAttributes redirectAttributes) {
+        
+        UserEntity user = (UserEntity) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/auth/login";
+        }
         
         try {
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            String email = auth.getName();
-            
-            UserEntity user = userRepository.findByEmail(email).orElse(null);
-            ProductEntity product = productRepository.findById(productId).orElse(null);
-            
-            if (user != null && product != null) {
-                auctionService.placeBid(product, user, bidAmount);
-                ra.addFlashAttribute("message", "Bid placed successfully!");
-            }
-        } catch (Exception e) {
-            ra.addFlashAttribute("error", e.getMessage());
+            auctionService.placeBid(productId, user, amount);
+            redirectAttributes.addFlashAttribute("success", "Bid placed successfully!");
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
         
         return "redirect:/product/view/" + productId;

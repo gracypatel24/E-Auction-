@@ -102,8 +102,9 @@
         <div class="header-title"><span>User Type</span> Management</div>
     </div>
     <div class="header-right">
-        <div class="user-profile">
-            <span>${sessionScope.user.firstName} ${sessionScope.user.lastName}</span>
+        <div>
+            <div style="font-weight: 600;">${sessionScope.user.firstName} ${sessionScope.user.lastName}</div>
+            <div style="font-size: 12px; color: #667eea;">${sessionScope.user.userType.userTypeName}</div>
         </div>
     </div>
 </header>
@@ -117,32 +118,32 @@
             </div>
             <div>
                 <div style="font-weight: 600;">${sessionScope.user.firstName} ${sessionScope.user.lastName}</div>
-                <div style="font-size: 12px; color: #667eea;">${sessionScope.user.role}</div>
+                <div style="font-size: 12px; color: #667eea;">${sessionScope.user.userType.userTypeName}</div>
             </div>
         </div>
 
         <div class="nav-item">
-            <a class="nav-link" href="${pageContext.request.contextPath}/admin-dashboard">
+            <a class="nav-link" href="${pageContext.request.contextPath}/admin/dashboard">
                 <i class="ti-dashboard"></i> Dashboard
             </a>
         </div>
         <div class="nav-item">
-            <a class="nav-link" href="${pageContext.request.contextPath}/listProduct">
+            <a class="nav-link" href="${pageContext.request.contextPath}/admin/products">
                 <i class="ti-gavel"></i> Auctions
             </a>
         </div>
         <div class="nav-item">
-            <a class="nav-link" href="${pageContext.request.contextPath}/listCategory">
+            <a class="nav-link" href="${pageContext.request.contextPath}/admin/category/list">
                 <i class="ti-layout"></i> Categories
             </a>
         </div>
         <div class="nav-item">
-            <a class="nav-link" href="${pageContext.request.contextPath}/listUser">
+            <a class="nav-link" href="${pageContext.request.contextPath}/admin/users">
                 <i class="ti-user"></i> Users
             </a>
         </div>
         <div class="nav-item active">
-            <a class="nav-link" href="${pageContext.request.contextPath}/newUserType">
+            <a class="nav-link" href="${pageContext.request.contextPath}/admin/user-type/new">
                 <i class="ti-user"></i> User Types
             </a>
         </div>
@@ -161,11 +162,22 @@
         <div class="form-container">
             <h2 class="form-title">Add New User Type</h2>
             
-            <form action="${pageContext.request.contextPath}/saveUserType" method="post">
+            <form action="${pageContext.request.contextPath}/admin/user-type/save" method="post">
                 <div class="form-group">
                     <label class="form-label">User Type Name</label>
-                    <input type="text" class="form-control" name="userType" 
-                           placeholder="e.g. ADMIN, PARTICIPANT, JUDGE" required>
+                    <input type="text" class="form-control" name="userTypeName" 
+                           placeholder="e.g. ADMIN, PARTICIPANT, SELLER" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-control" name="description" 
+                              placeholder="Enter description" rows="3"></textarea>
+                </div>
+                
+                <div class="form-check mb-3">
+                    <input type="checkbox" class="form-check-input" name="isActive" id="isActive" checked>
+                    <label class="form-check-label" for="isActive">Active</label>
                 </div>
                 
                 <button type="submit" class="btn-submit">
@@ -173,7 +185,7 @@
                 </button>
             </form>
             
-            <a href="${pageContext.request.contextPath}/admin-dashboard" class="btn-cancel">
+            <a href="${pageContext.request.contextPath}/admin/dashboard" class="btn-cancel">
                 <i class="ti-close mr-2"></i> Cancel
             </a>
         </div>
