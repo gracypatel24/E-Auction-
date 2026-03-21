@@ -17,27 +17,35 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Integer>
     Long countBySellerId(Integer sellerId);
     List<ProductEntity> findByStatus(String status);
     
-    // ========== SELLER METHODS ==========
-    @Query("SELECT p FROM ProductEntity p WHERE p.sellerId = :sellerId AND p.status = 'ACTIVE'")
-    List<ProductEntity> findActiveBySellerId(@Param("sellerId") Integer sellerId);
+    // ========== SELLER DASHBOARD METHODS ==========
     
-    @Query("SELECT p FROM ProductEntity p WHERE p.sellerId = :sellerId AND p.status = 'SOLD'")
-    List<ProductEntity> findSoldBySellerId(@Param("sellerId") Integer sellerId);
-    
-    @Query("SELECT p FROM ProductEntity p WHERE p.sellerId = :sellerId AND p.status = 'PENDING'")
-    List<ProductEntity> findPendingBySellerId(@Param("sellerId") Integer sellerId);
-    
+    // Count active auctions by seller ID
     @Query("SELECT COUNT(p) FROM ProductEntity p WHERE p.sellerId = :sellerId AND p.status = 'ACTIVE'")
     Long countActiveBySellerId(@Param("sellerId") Integer sellerId);
     
+    // Count sold items by seller ID
     @Query("SELECT COUNT(p) FROM ProductEntity p WHERE p.sellerId = :sellerId AND p.status = 'SOLD'")
     Long countSoldBySellerId(@Param("sellerId") Integer sellerId);
     
+    // Calculate total earnings by seller ID
     @Query("SELECT COALESCE(SUM(p.winningAmount), 0) FROM ProductEntity p WHERE p.sellerId = :sellerId AND p.status = 'SOLD'")
     Double totalEarningsBySellerId(@Param("sellerId") Integer sellerId);
     
-    @Query("SELECT p FROM ProductEntity p WHERE p.sellerId = :sellerId AND p.status = 'SOLD'")
+    // Earnings breakdown by seller ID (sold items with details)
+    @Query("SELECT p FROM ProductEntity p WHERE p.sellerId = :sellerId AND p.status = 'SOLD' ORDER BY p.updatedAt DESC")
     List<ProductEntity> earningsBreakdownBySellerId(@Param("sellerId") Integer sellerId);
+    
+    // Find active auctions by seller ID
+    @Query("SELECT p FROM ProductEntity p WHERE p.sellerId = :sellerId AND p.status = 'ACTIVE'")
+    List<ProductEntity> findActiveBySellerId(@Param("sellerId") Integer sellerId);
+    
+    // Find sold items by seller ID
+    @Query("SELECT p FROM ProductEntity p WHERE p.sellerId = :sellerId AND p.status = 'SOLD'")
+    List<ProductEntity> findSoldBySellerId(@Param("sellerId") Integer sellerId);
+    
+    // Find pending products by seller ID
+    @Query("SELECT p FROM ProductEntity p WHERE p.sellerId = :sellerId AND p.status = 'PENDING'")
+    List<ProductEntity> findPendingBySellerId(@Param("sellerId") Integer sellerId);
     
     // ========== ADMIN METHODS ==========
     @Query("SELECT p FROM ProductEntity p WHERE p.status = 'PENDING'")

@@ -102,15 +102,13 @@
             <scope>test</scope>
         </dependency>
         
-        <dependency>
-   			<groupId>org.springframework.boot</groupId>
-    		<artifactId>spring-boot-starter-web</artifactId>
-    <exclusions>
-        <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-        </exclusion>
-    </exclusions>
+<!-- Source: https://mvnrepository.com/artifact/net.authorize/anet-java-sdk -->
+<!-- Source: https://mvnrepository.com/artifact/net.authorize/anet-java-sdk -->
+<dependency>
+    <groupId>net.authorize</groupId>
+    <artifactId>anet-java-sdk</artifactId>
+    <version>3.0.0</version>
+    <scope>compile</scope>
 </dependency>
     </dependencies>
     

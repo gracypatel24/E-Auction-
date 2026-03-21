@@ -66,6 +66,21 @@ public interface BidRepository extends JpaRepository<BidEntity, Integer> {
     @Query("SELECT COUNT(b) FROM BidEntity b WHERE b.product.sellerId = :sellerId")
     Long countBySellerId(@Param("sellerId") Integer sellerId);
     
+ // Count all bids
+    @Query("SELECT COUNT(b) FROM BidEntity b")
+    Long countBy();
+
+    // Count active bids
+    @Query("SELECT COUNT(b) FROM BidEntity b WHERE b.status = 'ACTIVE'")
+    Long countActiveBids();
+
+    // Sum of all bid amounts
+    @Query("SELECT COALESCE(SUM(b.bidAmount), 0) FROM BidEntity b")
+    Double sumAllBids();
+
+    // Find all bids ordered by date (if you want)
+    List<BidEntity> findAllByOrderByBidTimeDesc();
+    
     // Count active bids on seller's products
     @Query("SELECT COUNT(b) FROM BidEntity b WHERE b.product.sellerId = :sellerId AND b.status = 'ACTIVE'")
     Long countActiveBySellerId(@Param("sellerId") Integer sellerId);

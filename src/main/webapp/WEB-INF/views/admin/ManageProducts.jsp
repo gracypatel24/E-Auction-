@@ -152,6 +152,12 @@
                                        onclick="return confirm('Are you sure you want to delete this product?')">
                                         <i class="fas fa-trash"></i>
                                     </a>
+									<!-- At the top of your ManageProducts.jsp, after the header -->
+									<div style="margin-bottom: 20px; text-align: right;">
+									    <a href="${pageContext.request.contextPath}/newProduct" class="btn btn-primary">
+									        <i class="fas fa-plus-circle"></i> Add New Product
+									    </a>
+									</div>
                                 </div>
                             </td>
                         </tr>

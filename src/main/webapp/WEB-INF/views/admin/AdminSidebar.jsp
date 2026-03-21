@@ -20,11 +20,11 @@
             <span>Manage Users</span>
         </a>
         
-        <!-- MANAGE PRODUCTS -->
-        <a href="${pageContext.request.contextPath}/product/listProduct" class="${currentPage == 'products' ? 'active' : ''}">
-            <i class="fas fa-box"></i>
-            <span>Manage Products</span>
-        </a>
+		<!-- MANAGE PRODUCTS -->
+		<a href="${pageContext.request.contextPath}/admin/products" class="${currentPage == 'products' ? 'active' : ''}">
+		    <i class="fas fa-box"></i>
+		    <span>Manage Products</span>
+		</a>
         
         <!-- CATEGORIES -->
         <a href="${pageContext.request.contextPath}/listCategory" class="${currentPage == 'categories' ? 'active' : ''}">
@@ -46,7 +46,7 @@
         </a>
         
         <!-- PAYMENTS -->
-        <a href="${pageContext.request.contextPath}/admin/payments" class="${currentPage == 'payments' ? 'active' : ''}">
+        <a href="${pageContext.request.contextPath}/chargecreditcard" class="${currentPage == 'payments' ? 'active' : ''}">
             <i class="fas fa-credit-card"></i>
             <span>Payments</span>
         </a>

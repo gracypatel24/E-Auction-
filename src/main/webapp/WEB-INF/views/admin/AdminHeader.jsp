@@ -232,13 +232,6 @@
                 <div class="page-title">${pageTitle}</div>
             </div>
             <div class="nav-right">
-                <!-- Messages Icon -->
-                <div class="mail-icon" onclick="window.location.href='${pageContext.request.contextPath}/admin/mail'">
-                    <i class="far fa-envelope"></i>
-                    <c:if test="${unreadCount > 0}">
-                        <span class="mail-badge">${unreadCount}</span>
-                    </c:if>
-                </div>
                 
                 <!-- User Dropdown with Profile and Logout -->
                 <div class="user-dropdown" id="userDropdown">
@@ -255,12 +248,6 @@
                     <div class="dropdown-menu" id="dropdownMenu">
                         <a href="${pageContext.request.contextPath}/admin/profile" class="dropdown-item">
                             <i class="fas fa-user"></i> My Profile
-                        </a>
-                        <a href="${pageContext.request.contextPath}/admin/mail" class="dropdown-item">
-                            <i class="fas fa-envelope"></i> Messages
-                            <c:if test="${unreadCount > 0}">
-                                <span style="margin-left: auto; background: #dc3545; color: white; padding: 2px 6px; border-radius: 10px; font-size: 11px;">${unreadCount}</span>
-                            </c:if>
                         </a>
                         <div class="dropdown-divider"></div>
                         <a href="${pageContext.request.contextPath}/logout" class="dropdown-item">

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,42 +47,16 @@ public class SellerController {
         }
         
         UserEntity user = (UserEntity) session.getAttribute("user");
-        
-        model.addAttribute("pageTitle", "Seller Dashboard");
-        model.addAttribute("page", "dashboard");
-        
         Integer userId = user.getUserId();
         
-        // Add statistics with null checks
-        try {
-            model.addAttribute("totalProducts", productRepository.countBySellerId(userId));
-        } catch (Exception e) {
-            model.addAttribute("totalProducts", 0L);
-        }
+        // Add statistics
+        model.addAttribute("totalProducts", productRepository.countBySellerId(userId));
+        model.addAttribute("activeAuctions", productRepository.countActiveBySellerId(userId));
+        model.addAttribute("soldItems", productRepository.countSoldBySellerId(userId));
+        model.addAttribute("totalEarnings", productRepository.totalEarningsBySellerId(userId));
         
-        try {
-            model.addAttribute("activeAuctions", productRepository.countActiveBySellerId(userId));
-        } catch (Exception e) {
-            model.addAttribute("activeAuctions", 0L);
-        }
-        
-        try {
-            model.addAttribute("soldItems", productRepository.countSoldBySellerId(userId));
-        } catch (Exception e) {
-            model.addAttribute("soldItems", 0L);
-        }
-        
-        try {
-            model.addAttribute("totalEarnings", productRepository.totalEarningsBySellerId(userId));
-        } catch (Exception e) {
-            model.addAttribute("totalEarnings", 0.0);
-        }
-        
-        try {
-            model.addAttribute("recentActivities", bidRepository.findRecentBySellerId(userId));
-        } catch (Exception e) {
-            model.addAttribute("recentActivities", List.of());
-        }
+        // For now, use empty list or static data
+        model.addAttribute("recentActivities", new ArrayList<>());
         
         return "seller/SellerDashboard";
     }
@@ -117,7 +92,7 @@ public class SellerController {
         model.addAttribute("product", new ProductEntity());
         model.addAttribute("categories", categoryRepository.findAll());
         
-        return "seller/AddProduct";
+        return "product/AddProduct";
     }
     
     @PostMapping("/products/add")

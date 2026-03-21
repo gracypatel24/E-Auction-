@@ -26,16 +26,19 @@ public class BidController {
         
         UserEntity user = (UserEntity) session.getAttribute("user");
         if (user == null) {
-            return "redirect:/auth/login";
+            return "redirect:/login";
         }
         
         try {
             auctionService.placeBid(productId, user, amount);
-            redirectAttributes.addFlashAttribute("success", "Bid placed successfully!");
+            redirectAttributes.addFlashAttribute("successMessage", "Bid placed successfully!");
         } catch (RuntimeException e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("errorMessage", "Error placing bid: " + e.getMessage());
         }
         
-        return "redirect:/product/view/" + productId;
+        return "redirect:/viewProduct?productId=" + productId;
     }
 }

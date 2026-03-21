@@ -10,8 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface CategoryRepository extends JpaRepository<CategoryEntity, Integer>
-{
+public interface CategoryRepository extends JpaRepository<CategoryEntity, Integer> {
     
     // Find category by name
     Optional<CategoryEntity> findByCategoryName(String categoryName);
@@ -20,31 +19,28 @@ public interface CategoryRepository extends JpaRepository<CategoryEntity, Intege
     @Query("SELECT c FROM CategoryEntity c WHERE c.isActive = true")
     List<CategoryEntity> findActiveCategories();
     
-    // Find categories where parent is null (main categories) - FIXED
+    // Find main categories (parent category is null)
     @Query("SELECT c FROM CategoryEntity c WHERE c.parentCategoryId IS NULL")
     List<CategoryEntity> findMainCategories();
     
-    List<CategoryEntity> findByIsActiveTrue();
-    
-    // Find categories by parent ID - FIXED (use parentCategoryId instead of parentCategory)
-    List<CategoryEntity> findByParentCategoryId(Integer parentCategoryId);
-    
-    // Find categories with product count
-    @Query("SELECT c, (SELECT COUNT(p) FROM ProductEntity p WHERE p.category = c.categoryName) as productCount FROM CategoryEntity c")
-    List<Object[]> findAllWithProductCount();
+    // Find subcategories by parent ID
+    List<CategoryEntity> findByParentCategoryId(Integer parentId);
     
     // Check if category name exists
     boolean existsByCategoryName(String categoryName);
     
-    // Check if category name exists excluding ID
-    @Query("SELECT CASE WHEN COUNT(c) > 0 THEN true ELSE false END FROM CategoryEntity c WHERE c.categoryName = :categoryName AND c.categoryId != :categoryId")
-    boolean existsByCategoryNameAndIdNot(@Param("categoryName") String categoryName, @Param("categoryId") Integer categoryId);
+    // Find categories with product count
+    @Query("SELECT c, COUNT(p) FROM CategoryEntity c LEFT JOIN ProductEntity p ON c.categoryName = p.category WHERE c.isActive = true GROUP BY c")
+    List<Object[]> findCategoriesWithProductCount();
     
-    // Find all with parent info
-    @Query("SELECT c, p.categoryName as parentName FROM CategoryEntity c LEFT JOIN CategoryEntity p ON c.parentCategoryId = p.categoryId")
-    List<Object[]> findAllWithParentInfo();
+    // Count active categories
+    @Query("SELECT COUNT(c) FROM CategoryEntity c WHERE c.isActive = true")
+    Long countActiveCategories();
     
-    // Find categories with products
-    @Query("SELECT DISTINCT c FROM CategoryEntity c WHERE EXISTS (SELECT p FROM ProductEntity p WHERE p.category = c.categoryName)")
-    List<CategoryEntity> findCategoriesWithProducts();
+    // Search categories by name
+    @Query("SELECT c FROM CategoryEntity c WHERE LOWER(c.categoryName) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+    List<CategoryEntity> searchCategories(@Param("keyword") String keyword);
+    
+    // Find categories by name containing
+    List<CategoryEntity> findByCategoryNameContainingIgnoreCase(String keyword);
 }

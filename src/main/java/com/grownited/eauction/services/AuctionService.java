@@ -63,14 +63,16 @@ public class AuctionService {
         return productRepository.findBySellerId(seller.getUserId());
     }
     
+ // Add these methods to your AuctionService class after line 50 or wherever appropriate
+
     public List<ProductEntity> searchProducts(String keyword) {
         return productRepository.searchProducts(keyword);
     }
-    
+
     public List<ProductEntity> getProductsByCategory(String category) {
         return productRepository.findByCategoryAndActive(category);
     }
-    
+
     public List<ProductEntity> getWonAuctionsByUser(Integer userId) {
         return productRepository.findWonAuctionsByUser(userId);
     }
