@@ -27,6 +27,22 @@ public class UserEntity {
     @Column(name = "phone")
     private String phone;
     
+    private String name;
+    
+    private String role; // ADMIN, USER, SELLER
+    @Column(name = "reset_token")
+    private String resetToken;
+
+    @Column(name = "reset_token_expiry")
+    private LocalDateTime resetTokenExpiry;
+
+    // Getters and Setters
+    public String getResetToken() { return resetToken; }
+    public void setResetToken(String resetToken) { this.resetToken = resetToken; }
+
+    public LocalDateTime getResetTokenExpiry() { return resetTokenExpiry; }
+    public void setResetTokenExpiry(LocalDateTime resetTokenExpiry) { this.resetTokenExpiry = resetTokenExpiry; }
+    
     @ManyToOne
     @JoinColumn(name = "user_type_id")
     private UserTypeEntity userType;
@@ -42,112 +58,104 @@ public class UserEntity {
     
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-    
-    // Constructors
-    public UserEntity() {}
-    
-    public UserEntity(String email, String password, String firstName, String lastName) {
-        this.email = email;
-        this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.isActive = true;
-        this.isDeleted = false;
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
+
+    // ================= GETTERS & SETTERS =================
+
+    public Integer getUserId() { 
+        return userId; 
     }
-    
-    // Getters and Setters
-    public Integer getUserId() {
-        return userId;
-    }
-    
+
     public void setUserId(Integer userId) {
         this.userId = userId;
     }
-    
+
     public String getEmail() {
         return email;
     }
-    
+
     public void setEmail(String email) {
         this.email = email;
     }
-    
+
     public String getPassword() {
         return password;
     }
-    
+
     public void setPassword(String password) {
         this.password = password;
     }
-    
+
     public String getFirstName() {
         return firstName;
     }
-    
+
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
-    
+
     public String getLastName() {
         return lastName;
     }
-    
+
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
-    
+
     public String getFullName() {
         return firstName + " " + lastName;
     }
-    
+
     public String getPhone() {
         return phone;
     }
-    
+
     public void setPhone(String phone) {
         this.phone = phone;
     }
     public String getRole() {
-        return this.userType != null ? this.userType.getUserTypeName() : null;
+        return this.userType != null ? this.userType.getUserTypeName() : role;
     }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
     public UserTypeEntity getUserType() {
         return userType;
     }
-    
+
     public void setUserType(UserTypeEntity userType) {
         this.userType = userType;
     }
-    
+
     public Boolean getIsActive() {
         return isActive;
     }
-    
+
     public void setIsActive(Boolean isActive) {
         this.isActive = isActive;
     }
-    
+
     public Boolean getIsDeleted() {
         return isDeleted;
     }
-    
+
     public void setIsDeleted(Boolean isDeleted) {
         this.isDeleted = isDeleted;
     }
-    
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
-    
+
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
-    
+
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
-    
+
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
