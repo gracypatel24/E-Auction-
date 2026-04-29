@@ -1,15 +1,7 @@
- 
-# Stage 1: Build the application
-FROM maven:3.9.9-amazoncorretto-21-alpine AS builder
+FROM eclipse-temurin:17-jdk
 WORKDIR /app
-COPY pom.xml .
-COPY src ./src
+RUN apt-get update && apt-get install -y maven
+COPY . .
 RUN mvn clean package -DskipTests
-
-# Stage 2: Create a lightweight runtime image
-FROM alpine/java:21-jdk
-WORKDIR /usr/local/tomcat/webapps/
-
-COPY --from=builder /app/target/eauction-1.war app.war
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.war"]
+ENTRYPOINT ["java", "-jar", "target/eauction-1.0.0.war"]
