@@ -1,3 +1,4 @@
+# Force rebuild - 2026-04-29
 FROM eclipse-temurin:17-jdk
 WORKDIR /app
 RUN apt-get update && apt-get install -y maven
