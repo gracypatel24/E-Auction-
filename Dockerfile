@@ -6,3 +6,5 @@ COPY . .
 RUN mvn clean package -DskipTests
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "target/eauction-1.0.0.war"]
+
+# deploy fix
