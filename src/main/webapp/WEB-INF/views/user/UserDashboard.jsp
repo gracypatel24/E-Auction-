@@ -84,11 +84,10 @@ response.setHeader("Content-Type", "text/html; charset=UTF-8");
             </thead>
             <tbody>
                 <c:forEach items="${recentBids}" var="bid" begin="0" end="4">
-                    <tr style="border-bottom: 1px solid #e2e8f0;">
-                        <td style="padding: 15px;">${bid.productName}</td>
-                        <td style="padding: 15px; font-weight: 600;">$${bid.amount}</td>
-                        <td style="padding: 15px;">$${bid.currentBid}</td>
-                        <td style="padding: 15px;">
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+        <td style="padding: 15px;">${bid.product.productName}</td>
+        <td style="padding: 15px; font-weight: 600;">$${bid.bidAmount}</td>
+        <td style="padding: 15px;">$${bid.product.currentBid}</td>
                             <span style="padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 500; 
                                   background: ${bid.statusClass == 'active' ? '#e3f2fd' : 
                                                 (bid.statusClass == 'winning' ? '#e8f5e9' : 
